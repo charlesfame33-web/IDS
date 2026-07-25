@@ -1,12 +1,11 @@
-scikit-learn
-imbalanced-learn
 pandas
 numpy
+scikit-learn
+xgboost
+joblib
 streamlit
 plotly
-joblib
-scapy
 matplotlib
 seaborn
-xgboost
-pyarrow
+scapy
+google-generativeai
