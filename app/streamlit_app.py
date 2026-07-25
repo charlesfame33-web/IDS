@@ -8,158 +8,103 @@ import tempfile
 import os
 import time
 import re
+import random
 from collections import defaultdict
 import google.generativeai as genai
 
-st.set_page_config(page_title="AI Intrusion Detection System", page_icon="🛡️", layout="wide", initial_sidebar_state="expanded")
+st.set_page_config(page_title="AI Intrusion Detection System", page_icon="🛡️", layout="wide", initial_sidebar_state="collapsed")
 
-if "dark_mode" not in st.session_state:
-    st.session_state.dark_mode = True
-if "api_key" not in st.session_state:
-    st.session_state.api_key = ""
+random.seed(42)
+cols_parts = []
+for i in range(120):
+    delay = f"{random.random() * 5:.1f}s"
+    count = random.randint(8, 20)
+    chars = "".join(
+        f'<span class="mchar" style="opacity:{0.2 + random.random() * 0.8:.2f}">{random.choice("01")}</span>'
+        for _ in range(count)
+    )
+    cols_parts.append(f'<div class="mcol" style="--d:{delay}">{chars}</div>')
 
-dark_mode = st.sidebar.toggle("🌙 Dark Mode (Matrix)", value=st.session_state.dark_mode)
-if dark_mode != st.session_state.dark_mode:
-    st.session_state.dark_mode = dark_mode
-    st.rerun()
+matrix_cols = "".join(cols_parts)
 
-if st.session_state.dark_mode:
-    st.markdown("""
+st.markdown(f"""
 <style>
-    @keyframes matrix {
-        0% { transform: translateY(-100%); opacity: 0; }
-        10% { opacity: 1; }
-        90% { opacity: 1; }
-        100% { transform: translateY(100vh); opacity: 0; }
-    }
-    .matrix-bg {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        z-index: -1;
-        background: #0a0f0a;
-        overflow: hidden;
-        pointer-events: none;
-    }
-    .matrix-col {
-        display: inline-block;
-        vertical-align: top;
-        width: 20px;
-        animation: matrix 8s linear infinite;
-        animation-delay: calc(var(--d) * 0.8s);
-    }
-    .matrix-char {
-        color: #00ff41;
+    @keyframes mfall {{
+        0% {{ transform: translateY(-100%); opacity: 0; }}
+        10% {{ opacity: 1; }}
+        90% {{ opacity: 1; }}
+        100% {{ transform: translateY(100vh); opacity: 0; }}
+    }}
+    .mbg {{
+        position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+        z-index: -1; background: #0a0f0a; overflow: hidden; pointer-events: none;
         font-family: 'Courier New', monospace;
-        font-size: 18px;
+        display: flex; flex-direction: row; flex-wrap: nowrap;
+    }}
+    .mcol {{
+        flex: 0 0 auto; width: 22px;
+        animation: mfall 4s linear infinite;
+        animation-delay: var(--d);
+    }}
+    .mchar {{
+        color: #00ff41; font-size: 18px;
         text-shadow: 0 0 5px #00ff41, 0 0 10px #00ff41;
-        opacity: 0.8;
-        line-height: 1.2;
-        display: block;
-    }
-    .main > div {
-        background: rgba(10, 15, 10, 0.75) !important;
+        line-height: 1.2; display: block;
+    }}
+    footer {{visibility: hidden;}}
+    header {{visibility: hidden;}}
+    .stApp {{ background: transparent !important; }}
+    .main > div {{
+        background: rgba(10, 15, 10, 0.82) !important;
         backdrop-filter: blur(4px);
         border-radius: 20px;
         padding: 1.5rem;
         margin: 0.5rem;
         border: 1px solid rgba(0, 255, 65, 0.15);
         box-shadow: 0 0 30px rgba(0, 255, 65, 0.05);
-    }
-    .stMarkdown, .stText, .stTitle, .stSubtitle, .stCaption, .stDataFrame, .stTable,
-    h1, h2, h3, h4, p, li, label {
+    }}
+    .stMarkdown, .stText, .stDataFrame, .stTable,
+    h1, h2, h3, h4, p, li, label {{
         color: #c0d8c0 !important;
-    }
-    .hero-title {
+    }}
+    .hero-title {{
         background: linear-gradient(90deg, #00ff41, #00cc33);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         text-shadow: 0 0 30px rgba(0, 255, 65, 0.2);
-    }
-    .hero-badge {
-        border-color: #00ff41;
-        color: #00ff41;
+    }}
+    .hero-badge {{
+        border-color: #00ff41; color: #00ff41;
         background: rgba(0, 255, 65, 0.1);
-        border-radius: 50px;
-        padding: 0.3rem 1.2rem;
-        display: inline-block;
-        font-size: 0.8rem;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 2px;
-    }
-    .stButton button {
+        border-radius: 50px; padding: 0.3rem 1.2rem; display: inline-block;
+        font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 2px;
+    }}
+    .stButton button {{
         background: linear-gradient(90deg, #00cc33, #009926) !important;
-        color: #0a0f0a !important;
-        border: none !important;
-        border-radius: 50px !important;
-        font-weight: 700 !important;
+        color: #0a0f0a !important; border: none !important;
+        border-radius: 50px !important; font-weight: 700 !important;
         box-shadow: 0 0 20px rgba(0, 255, 65, 0.2);
-    }
-    .stButton button:hover {
-        box-shadow: 0 0 40px rgba(0, 255, 65, 0.4);
-        transform: scale(1.02);
-    }
-    .stTabs [aria-selected="true"] {
+    }}
+    .stButton button:hover {{
+        box-shadow: 0 0 40px rgba(0, 255, 65, 0.4); transform: scale(1.02);
+    }}
+    .stTabs [aria-selected="true"] {{
         background: linear-gradient(90deg, #00cc33, #009926) !important;
         color: #0a0f0a !important;
-    }
-    .stTabs [data-baseweb="tab"] {
-        color: #80a080;
-    }
-    [data-testid="metric-container"] {
+    }}
+    .stTabs [data-baseweb="tab"] {{ color: #80a080; }}
+    [data-testid="metric-container"] {{
         background: rgba(0, 20, 0, 0.6);
         border: 1px solid rgba(0, 255, 65, 0.15);
-        backdrop-filter: blur(5px);
-        border-radius: 16px;
-        padding: 1rem;
-    }
-    #MainMenu, footer, header {
-        visibility: hidden;
-    }
-    .stSelectbox label, .stSlider label, .stFileUploader label {
-        color: #80a080 !important;
-    }
+        backdrop-filter: blur(5px); border-radius: 16px; padding: 1rem;
+    }}
+    .stSelectbox label, .stSlider label, .stFileUploader label {{ color: #80a080 !important; }}
 </style>
-<div class="matrix-bg" id="matrix-bg"></div>
-<script>
-(function() {
-    const bg = document.getElementById('matrix-bg');
-    if (!bg) return;
-    const chars = ['0','1'];
-    const cols = Math.floor(window.innerWidth / 20);
-    for (let i = 0; i < cols; i++) {
-        const col = document.createElement('div');
-        col.className = 'matrix-col';
-        col.style.setProperty('--d', Math.random() * 5);
-        const count = 10 + Math.floor(Math.random() * 20);
-        for (let j = 0; j < count; j++) {
-            const span = document.createElement('span');
-            span.className = 'matrix-char';
-            span.textContent = chars[Math.floor(Math.random() * chars.length)];
-            span.style.opacity = 0.2 + Math.random() * 0.8;
-            col.appendChild(span);
-        }
-        bg.appendChild(col);
-    }
-})();
-</script>
+<div class="mbg">{matrix_cols}</div>
 """, unsafe_allow_html=True)
-else:
-    st.markdown("""
-<style>
-    .stApp { background: #faf8f5; color: #1a1a1a; }
-    .hero-title { background: linear-gradient(90deg, #009926, #00cc33); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    .hero-badge { border-color: #00cc33; color: #00cc33; border-radius: 50px; padding: 0.3rem 1.2rem; display: inline-block; font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; background: rgba(0, 204, 51, 0.05); }
-    .stButton button { background: linear-gradient(90deg, #00cc33, #009926) !important; color: white !important; border: none !important; border-radius: 50px !important; }
-    .stTabs [aria-selected="true"] { background: linear-gradient(90deg, #00cc33, #009926) !important; color: white !important; }
-    [data-testid="metric-container"] { background: #ffffff; border: 1px solid #ece8e4; border-radius: 16px; padding: 1rem; }
-    h1, h2, h3, h4, p, li { color: #1a1a1a; }
-    #MainMenu, footer, header { visibility: hidden; }
-</style>
-""", unsafe_allow_html=True)
+
+if "api_key" not in st.session_state:
+    st.session_state.api_key = ""
 
 @st.cache_resource
 def load_artifacts():
@@ -177,8 +122,6 @@ with st.sidebar:
     if api_key_input:
         st.session_state.api_key = api_key_input
         genai.configure(api_key=api_key_input)
-    st.markdown("---")
-    st.caption("🛡️ AI IDS v2.0")
 
 def get_tshark_path():
     common_paths = ["C:\\Program Files\\Wireshark\\tshark.exe", "C:\\Program Files (x86)\\Wireshark\\tshark.exe"]
@@ -286,69 +229,29 @@ def extract_flows(pcap_bytes):
         fb = tb // 2
         bb = tb - fb
         row = {
-            "Flow Duration": dur,
-            "Total Fwd Packets": fp,
-            "Total Backward Packets": bp,
-            "Total Length of Fwd Packets": fb,
-            "Total Length of Bwd Packets": bb,
-            "Fwd Packet Length Mean": fb / max(1, fp),
-            "Bwd Packet Length Mean": bb / max(1, bp),
-            "Flow Bytes/s": tb / dur,
-            "Flow Packets/s": tp / dur,
-            "Flow IAT Mean": dur / max(1, tp),
-            "Fwd IAT Total": dur,
-            "Bwd IAT Total": dur,
-            "Fwd PSH Flags": 0,
-            "Bwd PSH Flags": 0,
-            "Fwd URG Flags": 0,
-            "Bwd URG Flags": 0,
-            "FWD Header Length": 20,
-            "BWD Header Length": 20,
-            "Fwd Packets/s": fp / dur,
-            "Bwd Packets/s": bp / dur,
-            "Min Packet Length": 40,
-            "Max Packet Length": 1500,
-            "Packet Length Mean": tb / max(1, tp),
-            "Packet Length Std": 100,
-            "Packet Length Variance": 10000,
-            "FIN Flag Count": 0,
-            "SYN Flag Count": 0,
-            "RST Flag Count": 0,
-            "PSH Flag Count": 0,
-            "ACK Flag Count": 0,
-            "URG Flag Count": 0,
-            "CWE Flag Count": 0,
-            "ECE Flag Count": 0,
-            "Down/Up Ratio": 1.0,
-            "Average Packet Size": tb / max(1, tp),
-            "Avg FWD Segment Size": fb / max(1, fp),
-            "Avg BWD Segment Size": bb / max(1, bp),
-            "Fwd Header Length.1": 20,
-            "Fwd Avg Bytes/Bulk": 0,
-            "Fwd Avg Packets/Bulk": 0,
-            "Fwd Avg Bulk Rate": 0,
-            "Bwd Avg Bytes/Bulk": 0,
-            "Bwd Avg Packets/Bulk": 0,
-            "Bwd Avg Bulk Rate": 0,
-            "Subflow Fwd Packets": fp,
-            "Subflow Fwd Bytes": fb,
-            "Subflow Bwd Packets": bp,
-            "Subflow Bwd Bytes": bb,
-            "Init_Win_bytes_forward": 65535,
-            "Init_Win_bytes_backward": 65535,
-            "act_data_pkt_fwd": 0,
-            "min_seg_size_forward": 40,
-            "Active Mean": dur / 2,
-            "Active Std": dur / 4,
-            "Active Max": dur,
-            "Active Min": 0,
-            "Idle Mean": 0.01,
-            "Idle Std": 0.01,
-            "Idle Max": 0.02,
-            "Idle Min": 0.0,
-            "Fwd Act Data Pkts": 0,
-            "Fwd Seg Size Min": 40,
-            "Fwd Seg Size Mean": fb / max(1, fp),
+            "Flow Duration": dur, "Total Fwd Packets": fp, "Total Backward Packets": bp,
+            "Total Length of Fwd Packets": fb, "Total Length of Bwd Packets": bb,
+            "Fwd Packet Length Mean": fb / max(1, fp), "Bwd Packet Length Mean": bb / max(1, bp),
+            "Flow Bytes/s": tb / dur, "Flow Packets/s": tp / dur, "Flow IAT Mean": dur / max(1, tp),
+            "Fwd IAT Total": dur, "Bwd IAT Total": dur,
+            "Fwd PSH Flags": 0, "Bwd PSH Flags": 0, "Fwd URG Flags": 0, "Bwd URG Flags": 0,
+            "FWD Header Length": 20, "BWD Header Length": 20,
+            "Fwd Packets/s": fp / dur, "Bwd Packets/s": bp / dur,
+            "Min Packet Length": 40, "Max Packet Length": 1500,
+            "Packet Length Mean": tb / max(1, tp), "Packet Length Std": 100, "Packet Length Variance": 10000,
+            "FIN Flag Count": 0, "SYN Flag Count": 0, "RST Flag Count": 0, "PSH Flag Count": 0,
+            "ACK Flag Count": 0, "URG Flag Count": 0, "CWE Flag Count": 0, "ECE Flag Count": 0,
+            "Down/Up Ratio": 1.0, "Average Packet Size": tb / max(1, tp),
+            "Avg FWD Segment Size": fb / max(1, fp), "Avg BWD Segment Size": bb / max(1, bp),
+            "Fwd Header Length.1": 20, "Fwd Avg Bytes/Bulk": 0, "Fwd Avg Packets/Bulk": 0,
+            "Fwd Avg Bulk Rate": 0, "Bwd Avg Bytes/Bulk": 0, "Bwd Avg Packets/Bulk": 0,
+            "Bwd Avg Bulk Rate": 0, "Subflow Fwd Packets": fp, "Subflow Fwd Bytes": fb,
+            "Subflow Bwd Packets": bp, "Subflow Bwd Bytes": bb,
+            "Init_Win_bytes_forward": 65535, "Init_Win_bytes_backward": 65535,
+            "act_data_pkt_fwd": 0, "min_seg_size_forward": 40,
+            "Active Mean": dur / 2, "Active Std": dur / 4, "Active Max": dur, "Active Min": 0,
+            "Idle Mean": 0.01, "Idle Std": 0.01, "Idle Max": 0.02, "Idle Min": 0.0,
+            "Fwd Act Data Pkts": 0, "Fwd Seg Size Min": 40, "Fwd Seg Size Mean": fb / max(1, fp),
         }
         rows.append(row)
     df = pd.DataFrame(rows)
@@ -365,7 +268,7 @@ def predict(df):
     return preds, probs
 
 def get_ai_explanation(flow_data, prediction, confidence):
-    if not st.session_state.api_key:
+    if not st.session_state.get('api_key'):
         return "Enter your Gemini API key in the sidebar."
     try:
         genai.configure(api_key=st.session_state.api_key)

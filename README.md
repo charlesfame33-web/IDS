@@ -8,7 +8,7 @@ Supports CSV upload, PCAP analysis, and real-time live capture.
 - **PCAP Upload** – Upload Wireshark captures for instant analysis.
 - **Live Capture** – Monitor your network interface in real-time.
 - **AI Explanations** – Get plain-English explanations for detected attacks (Gemini API optional).
-- **Matrix Theme** – Light/cream mode + dark mode with animated falling code.
+- **Matrix Theme** – Full-screen animated falling code background with neon green styling.
 
 ## Quick Start
 ```bash
