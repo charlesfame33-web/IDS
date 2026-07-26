@@ -3,20 +3,34 @@
 Detect network attacks in encrypted traffic using XGBoost (99.9% accuracy) on CICIDS2017.  
 Supports CSV upload, PCAP analysis, and real-time live capture.
 
-## Features
-- **CSV Upload** – Classify pre-extracted flow features.
-- **PCAP Upload** – Upload Wireshark captures for instant analysis.
-- **Live Capture** – Monitor your network interface in real-time.
-- **AI Explanations** – Get plain-English explanations for detected attacks (Gemini API optional).
-- **Matrix Theme** – Full-screen animated falling code background with neon green styling.
+## 🚀 Quick Start (CSV & PCAP only — no admin needed)
 
-## Quick Start
-```bash
-pip install -r requirements.txt
-streamlit run app/streamlit_app.py
-```
+1. Install **Python 3.10+**
+2. Open terminal and run:
+   ```bash
+   git clone https://github.com/SenpaiDark/IDS.git
+   cd IDS
+   pip install -r requirements.txt
+   streamlit run app/streamlit_app.py
+   ```
 
-> **Live Capture requires Administrator/root privileges.**
+## 🛡️ Full Package (with Live Capture)
+
+Live Capture requires **Wireshark / tshark** + **Administrator** privileges.
+
+1. Install **Wireshark** from [wireshark.org](https://wireshark.org) (tshark is bundled)
+2. Open terminal **as Administrator** and run:
+   ```bash
+   git clone https://github.com/SenpaiDark/IDS.git
+   cd IDS
+   pip install -r requirements.txt
+   python -m streamlit run app/streamlit_app.py --server.headless true --server.port 8502
+   ```
+   Or just double-click **`run.bat`** (auto-elevates to admin).
+
+## 🤖 AI Assistant
+- Get a free Gemini API key at [aistudio.google.com](https://aistudio.google.com)
+- Paste it in the **Configure Gemini API Key** expander inside the app
 
 ## Docker
 ```bash
@@ -29,6 +43,13 @@ Without live capture (CSV/PCAP only):
 docker build -t ids-app .
 docker run -p 8501:8501 ids-app
 ```
+
+## Features
+- **CSV Upload** – Classify pre-extracted flow features.
+- **PCAP Upload** – Upload Wireshark captures for instant analysis.
+- **Live Capture** – Monitor your network interface in real-time.
+- **AI Explanations** – Get plain-English explanations for detected attacks (Gemini API optional).
+- **Matrix Theme** – Full-screen animated falling code background with neon green styling.
 
 ## Tech Stack
 - Python 3.10+
@@ -72,9 +93,9 @@ ids-project/
 └── README.md
 ```
 
-## License
-MIT – for educational use.
-
 ## Contributors
 - **Segun Oyeduntan** – Owner
 - **Senpai Dark** – Developer
+
+## License
+MIT – for educational use.
