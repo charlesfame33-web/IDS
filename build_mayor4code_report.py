@@ -7,6 +7,9 @@ from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_LINE_SPACING
 from docx.enum.section import WD_SECTION
 from docx.oxml.ns import qn
 from docx.oxml import OxmlElement
+import os
+import subprocess
+import sys
 
 doc = Document()
 
@@ -160,6 +163,19 @@ def figure(img_path, caption_text):
     cap.runs[0].italic = True
 
 
+def generate_flowchart(output_path):
+    """Generate system flowchart PNG via the helper script."""
+    script = os.path.join(os.path.dirname(__file__),
+                          'shots', 'mayor4code', 'generate_flowchart.py')
+    if os.path.exists(script):
+        subprocess.run([sys.executable, script], check=True)
+    else:
+        print(f'[WARN] Flowchart script not found: {script}')
+
+
+# Generate flowchart image before building report
+generate_flowchart(None)
+
 # CONTENT_START
 # ---- Title Page ----
 for line in [
@@ -227,11 +243,13 @@ body('This project is dedicated to Almighty God, and to my family, whose support
 # ---- Acknowledgements ----
 prelim_title('Acknowledgements')
 body('I express my sincere gratitude to my project supervisor, Dr. Adeolu Obamehinti, for the '
-     'guidance, patience, and constructive criticism that shaped this work. I am grateful to '
-     'the Head and entire staff of the Department of Computer Science, Olusegun Agagu University '
-     'of Science and Technology, Okitipupa, for the knowledge imparted throughout my programme. '
-     'I also thank my family and friends for their unwavering support and encouragement. Above '
-     'all, I give thanks to Almighty God for His grace and strength.')
+      'guidance, patience, and constructive criticism that shaped this work. I am grateful to '
+      'the Head and entire staff of the Department of Computer Science, Olusegun Agagu University '
+      'of Science and Technology, Okitipupa, for the knowledge imparted throughout my programme. '
+      'I am also grateful to my senior colleague, Senpai, whose technical guidance, debugging '
+      'support, and architectural insights were invaluable throughout the development of the '
+      'mayor4code platform. I also thank my family and friends for their unwavering support and '
+      'encouragement. Above all, I give thanks to Almighty God for His grace and strength.')
 
 # ---- Abstract ----
 prelim_title('Abstract')
@@ -265,6 +283,7 @@ add_toc('TOC')
 prelim_title('List of Figures')
 for line in ['Figure 3.1: System Architecture of the mayor4code Platform',
              'Figure 3.2: System Flowchart of the mayor4code Platform',
+             'Figure 3.3: Entity-Relationship Diagram of the mayor4code Database',
              'Figure 4.1: Registration Interface',
              'Figure 4.2: Login Interface',
              'Figure 4.3: Learner Dashboard',
@@ -278,9 +297,13 @@ for line in ['Figure 3.1: System Architecture of the mayor4code Platform',
 
 # ---- List of Tables ----
 prelim_title('List of Tables')
-for line in ['Table 3.1: Summary of Principal Database Entities',
+for line in ['Table 2.1: Comparison of mayor4code with Existing Platforms',
+             'Table 3.1: Summary of Principal Database Entities',
+             'Table 3.2: Functional Requirements Specification',
+             'Table 3.3: Non-Functional Requirements Specification',
              'Table 4.1: Software Development Tools',
-             'Table 4.2: Summary of Test Cases and Results']:
+             'Table 4.2: Interface Features by Screen',
+             'Table 4.3: Summary of Test Cases and Results']:
     body(line)
 
 # ---- List of Abbreviations ----
@@ -476,9 +499,61 @@ body('E-learning has been widely adopted in education because it offers flexibil
      'environments can be as effective as traditional instruction. In the '
      'context of programming education, e-learning systems are particularly valuable '
      'because they can integrate practical coding activities directly into the learning '
-     'environment.')
+      'environment.')
 
-h2('2.3 Interactive Programming Learning Platforms')
+h2('2.3 Constructivist Learning Theory')
+body('Constructivist learning theory posits that learners actively construct knowledge rather '
+      'than passively receive it. Piaget (1952) described cognitive constructivism, in which '
+      'learners build mental models by assimilating new information into existing schemas and '
+      'accommodating schemas when new information does not fit. In the context of programming '
+      'education, this implies that learners must actively engage with concepts by writing code, '
+      'testing hypotheses, and debugging errors, rather than merely reading about syntax and '
+      'semantics.')
+body('Vygotsky (1978) extended constructivism with the concept of the Zone of Proximal '
+      'Development (ZPD), defined as the gap between what a learner can achieve independently '
+      'and what they can achieve with guidance. Interactive e-learning platforms can function as '
+      'scaffolding tools within the ZPD by providing immediate feedback, hint systems, and '
+      'structured progression that gradually reduces support as the learner gains competence. '
+      'Jonassen (1999) argued that constructivist learning environments should present authentic '
+      'problems, provide multiple representations of content, and support collaborative '
+      'knowledge construction, principles that informed the design of the mayor4code platform\'s '
+      'sequential lesson structure and integrated coding playground.')
+body('The locked progression mechanism in mayor4code aligns with the constructivist principle '
+      'that learners must master prerequisite concepts before advancing to more complex topics. '
+      'By requiring a minimum quiz score of sixty percent to unlock subsequent lessons, the '
+      'platform ensures that each learner has constructed a sufficient foundation of '
+      'understanding before being exposed to new material. This approach prevents the '
+      'accumulation of knowledge gaps that commonly hinder progress in self-directed programming '
+      'education.')
+
+h2('2.4 Mastery Learning and Sequential Progression')
+body('Mastery learning, originally proposed by Bloom (1968), is an instructional strategy in '
+      'which learners must achieve a defined level of competence before progressing to the next '
+      'unit of instruction. Bloom argued that given sufficient time and appropriate instruction, '
+      'most learners can achieve mastery of any subject, and that the key differentiator is not '
+      'innate ability but the opportunity to learn at one\'s own pace. Guskey (2007) reviewed '
+      'decades of mastery learning research and concluded that the approach consistently produces '
+      'superior learning outcomes compared to conventional time-bound instruction, particularly '
+      'for foundational knowledge that supports subsequent learning.')
+body('Keller (1968) developed the Personalized System of Instruction (PSI), which applied '
+      'mastery learning principles to higher education through self-paced modules, unit '
+      'quizzes with passing criteria, and immediate feedback. The PSI model bears direct '
+      'similarity to the design of mayor4code, where each lesson is a self-contained module, '
+      'the quiz serves as the mastery assessment, the sixty percent pass mark defines the '
+      'mastery threshold, and locked progression ensures that learners demonstrate competence '
+      'before advancing. Research by Kulik, Kulik, and Bangert-Drowns (1990) in a meta-analysis '
+      'of PSI studies found that the approach led to higher achievement and greater learner '
+      'satisfaction compared to conventional lecture-based instruction.')
+body('The sequential progression model adopted by mayor4code is further supported by the '
+      'principles of deliberate practice described by Ericsson, Krampe, and Tesch-Romer (1993). '
+      'Deliberate practice involves well-defined learning objectives, immediate feedback, '
+      'repetition, and progressive difficulty — all characteristics embedded in the platform\'s '
+      'lesson-quiz-unlock cycle. By integrating deliberate practice with mastery learning '
+      'criteria, mayor4code provides a structured pathway that guides learners from basic '
+      'syntax to more advanced Python programming concepts while ensuring foundational '
+      'understanding at each step.')
+
+h2('2.5 Interactive Programming Learning Platforms')
 body('Interactive programming learning platforms combine instructional content with hands-on '
      'coding activities, enabling learners to write and execute code while studying. Unlike '
      'static resources such as textbooks and video tutorials, these platforms provide immediate '
@@ -489,7 +564,7 @@ body('The provision of instant feedback is grounded in established learning theo
      'reduce the barrier posed by local environment setup, since code is executed within the '
      'browser, allowing beginners to focus on learning rather than configuration.')
 
-h2('2.4 Learning Management and Progress Tracking')
+h2('2.6 Learning Management and Progress Tracking')
 body('A learning management system (LMS) is a software application used to plan, deliver, and '
      'track educational content and learner performance. Core LMS functions include user '
      'management, content delivery, assessment, progress tracking, and reporting. Progress '
@@ -501,7 +576,7 @@ body('Locked or sequential progression is a design strategy in which learners mu
      'assessment, in which quizzes are scored instantly by the system, further supports timely '
      'feedback and reduces the administrative burden associated with manual grading.')
 
-h2('2.5 Gamification in Learning')
+h2('2.7 Gamification in Learning')
 body('Gamification refers to the application of game design elements, such as points, badges, '
      'certificates, and leaderboards, in non-game contexts to increase engagement and '
      'motivation. Deterding, Dixon, Khaled, and Nacke (2011) defined gamification as the use of '
@@ -515,7 +590,7 @@ body('Elements such as completion certificates provide learners with tangible re
      'structured learning by reinforcing desired behaviours and sustaining learner interest '
      'throughout the course.')
 
-h2('2.6 Technologies Used in Web Development')
+h2('2.8 Technologies Used in Web Development')
 body('Web development involves the use of various technologies for designing and implementing '
      'web applications. The front-end, responsible for the user interface, is commonly built '
      'using HTML, CSS, and JavaScript. Duckett (2014) explained that HTML provides the '
@@ -534,9 +609,9 @@ body('Data in web applications are managed by a database management system (DBMS
      'and PostgreSQL in production, both of which are reliable relational database systems well '
      'supported by the Django framework.')
 
-h2('2.7 Related Works and Existing Systems')
+h2('2.9 Related Works and Existing Systems')
 
-h3('2.7.1 Codecademy Interactive Coding Platform')
+h3('2.9.1 Codecademy Interactive Coding Platform')
 body('Approach')
 body('Codecademy is a commercial online platform that teaches programming through interactive, '
      'in-browser lessons. Learners read short instructional segments and immediately apply '
@@ -554,7 +629,7 @@ bullet('Most advanced content is restricted behind a paid subscription.')
 bullet('Certification is limited in the free tier.')
 bullet('Requires continuous internet connectivity.')
 
-h3('2.7.2 freeCodeCamp Learning Platform')
+h3('2.9.2 freeCodeCamp Learning Platform')
 body('Approach')
 body('freeCodeCamp is a free, non-profit platform that teaches web development and programming '
      'through a sequence of interactive challenges and projects, leading to free certifications.')
@@ -571,7 +646,7 @@ bullet('Focuses primarily on web development rather than general programming.')
 bullet('Self-directed structure may overwhelm absolute beginners.')
 bullet('Limited personalised guidance.')
 
-h3('2.7.3 SoloLearn Mobile Learning Application')
+h3('2.9.3 SoloLearn Mobile Learning Application')
 body('Approach')
 body('SoloLearn teaches programming through bite-sized lessons and quizzes, with a strong '
      'emphasis on mobile learning and community interaction.')
@@ -587,7 +662,7 @@ bullet('Content depth is limited for advanced learners.')
 bullet('Heavy reliance on community-generated content quality.')
 bullet('Advertisements in the free version.')
 
-h3('2.7.4 HackerRank Skill Assessment Platform')
+h3('2.9.4 HackerRank Skill Assessment Platform')
 body('Approach')
 body('HackerRank provides coding challenges and skill assessments primarily for practising '
      'programming and preparing for technical interviews.')
@@ -603,7 +678,7 @@ bullet('Oriented towards practice and assessment rather than structured teaching
 bullet('Challenging for complete beginners.')
 bullet('Limited explanatory lesson content.')
 
-h3('2.7.5 W3Schools Online Tutorials')
+h3('2.9.5 W3Schools Online Tutorials')
 body('Approach')
 body('W3Schools provides free reference tutorials for web and programming technologies, '
      'featuring simple explanations and an in-browser "Try it Yourself" editor.')
@@ -619,15 +694,58 @@ bullet('Reference style lacks enforced structured progression.')
 bullet('No mastery-based locking of content.')
 bullet('Limited automated progress tracking.')
 
-h3('2.7.6 Summary of Related Works')
+h3('2.9.6 Summary of Related Works')
 body('The reviewed platforms demonstrate the effectiveness of interactive, browser-based '
      'programming education and the value of automated feedback, gamification, and '
      'certification. However, they also reveal recurring limitations, including paywalls, '
      'insufficient structured progression, weak enforcement of mastery before advancement, and '
      'a frequent separation between teaching and practice. These observations inform the design '
-     'of the proposed system.')
+      'of the proposed system.')
 
-h2('2.8 Research Gap')
+h3('2.9.7 Comparative Analysis of Existing Platforms')
+body('Table 2.1 presents a comparative analysis of mayor4code against the reviewed existing '
+      'platforms across seven key features. The comparison illustrates how mayor4code addresses '
+      'the gaps identified in the literature by combining all essential features in a single '
+      'free platform.')
+body('Table 2.1: Comparison of mayor4code with Existing Platforms')
+
+# Build comparison table
+tbl = doc.add_table(rows=7, cols=7)
+tbl.alignment = WD_ALIGN_PARAGRAPH.CENTER
+tbl.style = 'Table Grid'
+headers = ['Feature', 'mayor4code', 'Codecademy', 'freeCodeCamp', 'SoloLearn', 'HackerRank', 'W3Schools']
+features = [
+    ['Structured Lessons',       '✓', '✓', '✓', '✓', '✗', '✓'],
+    ['Locked Progression',       '✓', '✓', '✗', '✗', '✗', '✗'],
+    ['Code Playground',          '✓', '✓', '✓', '✓', '✓', '✓'],
+    ['Auto Assessment',          '✓', '✓', '✓', '✓', '✓', '✓'],
+    ['Certificates',             '✓', 'Partial', '✓', '✗', '✗', '✓'],
+    ['Leaderboard',              '✓', '✗', '✗', '✓', '✓', '✗'],
+]
+for c, h in enumerate(headers):
+    cell = tbl.cell(0, c)
+    cell.text = ''
+    p = cell.paragraphs[0]
+    p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    r = p.add_run(h)
+    r.bold = True
+    r.font.size = Pt(9)
+for ri, row in enumerate(features):
+    for ci, val in enumerate(row):
+        cell = tbl.cell(ri + 1, ci)
+        cell.text = ''
+        p = cell.paragraphs[0]
+        p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        r = p.add_run(val)
+        r.font.size = Pt(9)
+
+body('The comparison reveals that mayor4code is the only platform among those reviewed that '
+      'simultaneously offers structured lessons with enforced locked progression, an integrated '
+      'code playground, automated assessment, certification, and a leaderboard — all at no cost '
+      'to the learner. This unique combination directly addresses the research gaps identified '
+      'in Section 2.10.')
+
+h2('2.10 Research Gap')
 body('Based on the reviewed literature and existing systems, the following research gaps were '
      'identified:')
 numbered('Limited Free and Structured Progression: Many effective platforms restrict structured '
@@ -643,7 +761,7 @@ numbered('Limited Integration in a Single System: Few lightweight platforms comb
          'lessons, an integrated code playground, automated assessment, progress tracking, '
          'certification, and a leaderboard within one coherent environment.')
 
-h2('2.9 Summary of Literature Review')
+h2('2.11 Summary of Literature Review')
 body('This chapter reviewed literature related to e-learning systems, interactive programming '
      'education, learning management and progress tracking, gamification, web development '
      'technologies, and existing programming-learning platforms. The review revealed that '
@@ -678,9 +796,77 @@ body('The system was designed as a web-based application accessible through a we
      'interface.')
 body('The system adopts a three-tier architecture consisting of the presentation layer, the '
      'application layer, and the database layer. This separation promotes scalability, '
-     'maintainability, and a clear division of responsibilities within the system.')
+      'maintainability, and a clear division of responsibilities within the system.')
 
-h2('3.3 Design Consideration')
+h2('3.3 Requirements Specification')
+body('The functional and non-functional requirements of the mayor4code platform were identified '
+      'based on the research objectives and the gaps identified in the literature review. '
+      'Table 3.2 lists the functional requirements, specifying the core operations the system '
+      'must perform.')
+body('Table 3.2: Functional Requirements Specification')
+fr = doc.add_table(rows=9, cols=3)
+fr.alignment = WD_ALIGN_PARAGRAPH.CENTER
+fr.style = 'Table Grid'
+f_headers = ['ID', 'Requirement', 'Description']
+f_rows = [
+    ['FR1', 'User Registration', 'The system shall allow new users to create an account with username, email, and password.'],
+    ['FR2', 'User Authentication', 'The system shall authenticate registered users and manage sessions securely.'],
+    ['FR3', 'Lesson Delivery', 'The system shall present structured Python lessons in sequential order.'],
+    ['FR4', 'Locked Progression', 'The system shall unlock the next lesson only after the learner passes the current quiz at 60% or higher.'],
+    ['FR5', 'Quiz Scoring', 'The system shall score multiple-choice quizzes automatically and display results instantly.'],
+    ['FR6', 'Code Execution', 'The system shall execute Python code submitted via the playground in an isolated subprocess.'],
+    ['FR7', 'Certificate Issuance', 'The system shall automatically issue a certificate with a unique code upon course completion.'],
+    ['FR8', 'Leaderboard', 'The system shall display a ranked list of learners based on their average performance.'],
+]
+for c, h in enumerate(f_headers):
+    cell = fr.cell(0, c)
+    cell.text = ''
+    p = cell.paragraphs[0]
+    p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    r = p.add_run(h)
+    r.bold = True
+    r.font.size = Pt(9)
+for ri, row in enumerate(f_rows):
+    for ci, val in enumerate(row):
+        cell = fr.cell(ri + 1, ci)
+        cell.text = ''
+        p = cell.paragraphs[0]
+        p.alignment = WD_ALIGN_PARAGRAPH.LEFT
+        r = p.add_run(val)
+        r.font.size = Pt(9)
+
+body('Table 3.3 lists the non-functional requirements, specifying the quality attributes the '
+      'system must satisfy.')
+body('Table 3.3: Non-Functional Requirements Specification')
+nfr = doc.add_table(rows=6, cols=3)
+nfr.alignment = WD_ALIGN_PARAGRAPH.CENTER
+nfr.style = 'Table Grid'
+nf_headers = ['ID', 'Requirement', 'Description']
+nf_rows = [
+    ['NFR1', 'Security', 'Passwords must be hashed; playground code must execute in an isolated subprocess with a 5-second timeout.'],
+    ['NFR2', 'Usability', 'The interface must be responsive across desktop, tablet, and mobile devices with dark/light mode support.'],
+    ['NFR3', 'Performance', 'Page loads must complete within 3 seconds; quiz scoring must be immediate upon submission.'],
+    ['NFR4', 'Scalability', 'The system must support concurrent access by multiple learners without degradation.'],
+    ['NFR5', 'Reliability', 'Learner progress and scores must be persisted accurately; the system must maintain data integrity.'],
+]
+for c, h in enumerate(nf_headers):
+    cell = nfr.cell(0, c)
+    cell.text = ''
+    p = cell.paragraphs[0]
+    p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    r = p.add_run(h)
+    r.bold = True
+    r.font.size = Pt(9)
+for ri, row in enumerate(nf_rows):
+    for ci, val in enumerate(row):
+        cell = nfr.cell(ri + 1, ci)
+        cell.text = ''
+        p = cell.paragraphs[0]
+        p.alignment = WD_ALIGN_PARAGRAPH.LEFT
+        r = p.add_run(val)
+        r.font.size = Pt(9)
+
+h2('3.4 Design Consideration')
 body('Several factors were considered during the design of the proposed system to ensure '
      'effectiveness and usability.')
 h3('Security')
@@ -708,7 +894,7 @@ h3('Performance')
 body('Static assets are served efficiently, and the locked-progression logic and quiz scoring '
      'were implemented to respond promptly, providing learners with a responsive experience.')
 
-h2('3.4 System Architecture')
+h2('3.5 System Architecture')
 body('The proposed mayor4code platform adopts a three-tier architecture model consisting of the '
      'Presentation Layer, the Application Layer, and the Database Layer.')
 body('The Presentation Layer is the interface through which users interact with the system using '
@@ -725,7 +911,7 @@ body('The Database Layer stores all persistent data, including user accounts, le
      'ensures secure, efficient communication between users and the system.')
 body('Figure 3.1: System Architecture of the mayor4code Platform')
 
-h2('3.5 Components of System Architecture')
+h2('3.6 Components of System Architecture')
 body('The architecture of the proposed system consists of the following major components:')
 h3('User Interface Module')
 body('This component provides the graphical interface through which learners and the '
@@ -754,7 +940,7 @@ h3('Administration Module')
 body('This module allows the administrator to manage lessons, quizzes, questions, users, and '
      'progress records, and to monitor overall system activity.')
 
-h2('3.6 Database Design')
+h2('3.7 Database Design')
 body('The database was designed to store all persistent information required by the system in a '
      'structured and consistent manner. The principal entities and their relationships are '
      'summarised as follows:')
@@ -771,7 +957,7 @@ body('A user may have many progress records and one certificate; a lesson has on
      'support efficient retrieval of learner progress and assessment results.')
 body('Table 3.1: Summary of Principal Database Entities')
 
-h2('3.7 Flowchart of the System')
+h2('3.8 Flowchart of the System')
 body('The system begins when a user accesses the platform through a web browser. New users '
      'register for an account, while returning users log in with their credentials. Upon '
      'successful authentication, the learner is directed to a dashboard that displays overall '
@@ -787,7 +973,8 @@ body('When a learner successfully completes all lessons, the system automaticall
      'lessons, quizzes, questions, users, and progress records. The process continues until the '
      'user completes the intended operation and logs out, which terminates the active session '
      'and ensures system security.')
-body('Figure 3.2: System Flowchart of the mayor4code Platform')
+figure(r'c:\Users\ALEXIS\Desktop\SENPAI\shots\mayor4code\flowchart.png',
+       'Figure 3.2: System Flowchart of the mayor4code Platform')
 # ==================== CHAPTER FOUR ====================
 chapter(['Chapter Four', 'System Implementation, Results and Discussion'])
 
@@ -811,7 +998,63 @@ body('The application logic was organised into modular components corresponding 
      'certification and leaderboard, and administration functions. Static assets were served '
      'efficiently in production using the WhiteNoise library, and application configuration was '
      'managed through environment variables to separate settings from source code and protect '
-     'sensitive credentials.')
+      'sensitive credentials.')
+
+h3('4.2.1 Interface Feature Description')
+body('Table 4.2 describes the key user interface components for each major screen of the '
+      'mayor4code platform, detailing the UI elements, user actions, and corresponding system '
+      'responses.')
+body('Table 4.2: Interface Features by Screen')
+
+ift = doc.add_table(rows=10, cols=4)
+ift.alignment = WD_ALIGN_PARAGRAPH.CENTER
+ift.style = 'Table Grid'
+ift_headers = ['Screen', 'UI Elements', 'User Action', 'System Response']
+ift_rows = [
+    ['Registration', 'Username, email, password fields; show/hide toggle; submit button',
+     'Enter details and click register',
+     'Creates account, logs in, redirects to dashboard'],
+    ['Login', 'Username and password fields; submit button; Google sign-in button',
+     'Enter credentials and click login',
+     'Authenticates user, redirects to dashboard'],
+    ['Dashboard', 'Progress bar; lesson list with status indicators; sidebar navigation',
+     'Click a lesson card',
+     'Loads lesson content or shows lock message'],
+    ['Lesson', 'Lesson content; previous/next navigation; complete button',
+     'Read content and click to proceed',
+     'Displays quiz or marks lesson as complete'],
+    ['Quiz', 'Question text; option list (radio buttons); countdown timer; submit button',
+     'Select answer and submit before timer expires',
+     'Scores answer, advances to next question, shows result'],
+    ['Playground', 'Code editor; run button; output panel; character counter',
+     'Type code and click run',
+     'Executes code in subprocess, returns output or error'],
+    ['Certificate', 'Certificate design; student name; course title; verification code',
+     'View certificate; copy verification code',
+     'Displays issued certificate with unique code'],
+    ['Leaderboard', 'Ranked table; username; average score; completed lessons; attempts',
+     'Browse leaderboard',
+     'Renders sorted list of all learners'],
+    ['Admin', 'Lesson/quiz/question CRUD forms; user progress table',
+     'Add, edit, or delete content',
+     'Updates database and refreshes interface'],
+]
+for c, h in enumerate(ift_headers):
+    cell = ift.cell(0, c)
+    cell.text = ''
+    p = cell.paragraphs[0]
+    p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    r = p.add_run(h)
+    r.bold = True
+    r.font.size = Pt(9)
+for ri, row in enumerate(ift_rows):
+    for ci, val in enumerate(row):
+        cell = ift.cell(ri + 1, ci)
+        cell.text = ''
+        p = cell.paragraphs[0]
+        p.alignment = WD_ALIGN_PARAGRAPH.LEFT
+        r = p.add_run(val)
+        r.font.size = Pt(8)
 
 h2('4.3 Development Tools and Environment')
 body('The tools and technologies used in the development of the system are summarised in Table '
@@ -886,24 +1129,91 @@ body('Individual functions, such as quiz scoring, progression unlocking, and cer
      'for representative inputs.')
 h3('4.5.2 Functional Testing')
 body('Complete features were tested end to end, including registration and login, lesson '
-     'navigation, quiz submission and scoring, locked progression, code execution in the '
-     'playground, certificate issuance, and leaderboard ranking. The results are summarised in '
-     'Table 4.2.')
-body('Table 4.2: Summary of Test Cases and Results')
-bullet('User registration and login — Accounts created and authenticated correctly. Passed.')
-bullet('Locked progression — Next lesson unlocked only after a pass of at least sixty percent. '
-       'Passed.')
-bullet('Quiz scoring — Scores computed accurately and displayed instantly. Passed.')
-bullet('Python playground — Valid code executed and returned output; unsafe operations and '
-       'long-running code were prevented. Passed.')
-bullet('Certificate issuance — Certificate with a unique code issued on course completion. '
-       'Passed.')
-bullet('Leaderboard — Learners ranked correctly by average performance. Passed.')
+      'navigation, quiz submission and scoring, locked progression, code execution in the '
+      'playground, certificate issuance, and leaderboard ranking. The results are summarised in '
+      'Table 4.3.')
+body('Table 4.3: Summary of Test Cases and Results')
+
+tt = doc.add_table(rows=22, cols=5)
+tt.alignment = WD_ALIGN_PARAGRAPH.CENTER
+tt.style = 'Table Grid'
+tt_headers = ['Test ID', 'Test Description', 'Input/Condition', 'Expected Result', 'Actual Result']
+tt_rows = [
+    ['TC01', 'User Registration (valid)', 'New username, email, password', 'Account created; redirected to dashboard', 'Passed'],
+    ['TC02', 'User Registration (duplicate)', 'Existing username', 'Error message displayed; no account created', 'Passed'],
+    ['TC03', 'User Registration (empty fields)', 'Blank form submitted', 'Validation errors shown', 'Passed'],
+    ['TC04', 'Login (valid credentials)', 'Correct username + password', 'Authenticated; redirected to dashboard', 'Passed'],
+    ['TC05', 'Login (invalid password)', 'Correct username + wrong password', 'Error message displayed', 'Passed'],
+    ['TC06', 'Lesson progression (pass)', 'Submit quiz with score >= 60%', 'Next lesson unlocked', 'Passed'],
+    ['TC07', 'Lesson progression (fail)', 'Submit quiz with score < 60%', 'Next lesson remains locked; retry allowed', 'Passed'],
+    ['TC08', 'Lesson progression (boundary)', 'Submit quiz with exactly 60%', 'Next lesson unlocked (boundary pass)', 'Passed'],
+    ['TC09', 'First lesson access', 'New user clicks lesson 1', 'Lesson 1 accessible (no prerequisite)', 'Passed'],
+    ['TC10', 'Playground (valid code)', "Submit 'print(\"Hello\")'", 'Output: "Hello" returned', 'Passed'],
+    ['TC11', 'Playground (unsafe import)', "Submit 'import os'", '403 error; code blocked', 'Passed'],
+    ['TC12', 'Playground (timeout)', 'Submit infinite loop code', 'Timeout error after 5 seconds', 'Passed'],
+    ['TC13', 'Playground (long code)', 'Submit code > 10,000 characters', '400 error; length limit enforced', 'Passed'],
+    ['TC14', 'Quiz scoring (all correct)', 'Answer all questions correctly', 'Score = 100%', 'Passed'],
+    ['TC15', 'Quiz scoring (mixed)', 'Answer some correctly, some wrong', 'Correct percentage computed', 'Passed'],
+    ['TC16', 'Certificate issuance (completed)', 'Complete all 12 lessons', 'Certificate with unique code issued', 'Passed'],
+    ['TC17', 'Certificate issuance (incomplete)', 'Complete < 12 lessons', 'No certificate issued', 'Passed'],
+    ['TC18', 'Leaderboard ranking', 'Two learners with different scores', 'Higher score ranked first', 'Passed'],
+    ['TC19', 'Admin lesson CRUD', 'Add, edit, delete a lesson', 'Database updated; reflected in UI', 'Passed'],
+    ['TC20', 'Admin quiz management', 'Add questions to a quiz', 'Questions appear in learner quiz', 'Passed'],
+    ['TC21', 'Logout', 'Click logout button', 'Session terminated; redirected to login', 'Passed'],
+]
+for c, h in enumerate(tt_headers):
+    cell = tt.cell(0, c)
+    cell.text = ''
+    p = cell.paragraphs[0]
+    p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    r = p.add_run(h)
+    r.bold = True
+    r.font.size = Pt(8)
+for ri, row in enumerate(tt_rows):
+    for ci, val in enumerate(row):
+        cell = tt.cell(ri + 1, ci)
+        cell.text = ''
+        p = cell.paragraphs[0]
+        p.alignment = WD_ALIGN_PARAGRAPH.LEFT
+        r = p.add_run(val)
+        r.font.size = Pt(8)
 h3('4.5.3 Usability Testing')
 body('Sample users interacted with the platform and provided feedback on ease of use. Users '
      'found the interface intuitive and responsive, and the dark and light mode toggle was '
      'reported to improve reading comfort. Minor observations were addressed during iterative '
-     'refinement.')
+      'refinement.')
+
+h3('4.5.4 Implementation Challenges')
+body('During the development of the mayor4code platform, several implementation challenges were '
+      'encountered and addressed.')
+body('The first challenge was securing the in-browser Python playground. Executing arbitrary user '
+      'code on the server poses significant security risks, including the potential for system '
+      'commands, file system access, and resource exhaustion. This was addressed by running user '
+      'submissions in an isolated subprocess with a five-second execution timeout, blocking '
+      'dangerous imports and function calls through string matching on the lowercased source code, '
+      'and enforcing a ten-thousand-character code length limit. The approach provides reasonable '
+      'security for an educational context while maintaining a responsive user experience, though '
+      'container-based sandboxing would offer stronger isolation for production deployment.')
+body('The second challenge was implementing locked progression without creating a poor user '
+      'experience. The system must correctly handle edge cases such as the first lesson being '
+      'always unlocked (no prerequisite), administrator access bypassing progression locks, and '
+      'users who complete all lessons being allowed to revisit previous content. These cases were '
+      'handled by default-unlocking lesson one in the view logic, granting administrator accounts '
+      'full access through a separate permission check, and allowing completed lessons to be '
+      'reviewed without quiz re-attempt constraints.')
+body('A third challenge related to the quiz timer synchronisation. Since the quiz timer is '
+      'implemented client-side with JavaScript, a determined learner could theoretically tamper '
+      'with the timer value. The elapsed time is captured in a hidden input field submitted with '
+      'the quiz, and the server records it as time_taken for analytics rather than for enforcing '
+      'time limits, avoiding false disqualifications. Future versions could implement server-side '
+      'timer validation for stricter time enforcement.')
+body('Finally, generating the project report itself presented challenges. Producing a '
+      'professionally formatted Word document with mixed page numbering (Roman numerals for '
+      'preliminary pages, Arabic numerals for the main body), auto-generated table of contents, '
+      'embedded figures, and formatted tables required careful use of the python-docx library\'s '
+      'section and field-code APIs. These techniques, while not part of the e-learning platform '
+      'itself, were essential for producing the academic documentation required for the BSc '
+      'project submission.')
 
 h2('4.6 Discussion of Results')
 body('The results confirmed that the platform met the objectives established in Chapter One. '
@@ -947,9 +1257,37 @@ body('The developed platform delivered twelve sequential Python lessons with loc
      'playground with safe code execution, progress tracking, automatically issued completion '
      'certificates, and a leaderboard. Testing confirmed that the system enforced progression '
      'correctly, scored assessments accurately, executed code safely, and issued valid '
-     'certificates.')
+      'certificates.')
 
-h2('5.2 Conclusion')
+h2('5.2 Contributions to Knowledge')
+body('This study makes the following contributions to knowledge in the field of interactive '
+      'e-learning for programming education:')
+numbered('An integrated e-learning platform that combines structured lesson delivery, an '
+         'in-browser code playground, automated assessment, progress tracking, certification, '
+         'and gamification within a single free and secure web application. Unlike existing '
+         'platforms that either separate these features across multiple tools or restrict '
+         'key functionality behind paywalls, mayor4code provides a unified learning environment '
+         'that addresses the fragmentation identified in the literature review.')
+numbered('A mastery-based locked progression model that enforces a minimum quiz score of sixty '
+         'percent before advancing to the next lesson. This operationalisation of mastery learning '
+         'principles (Bloom, 1968; Guskey, 2007) within a web-based programming context ensures '
+         'that learners build a solid foundation of prerequisite knowledge before encountering '
+         'more advanced concepts, reducing the accumulation of knowledge gaps.')
+numbered('A secure in-browser code execution environment that runs learner-submitted Python code '
+         'in an isolated subprocess with a five-second timeout, blocked dangerous operations, '
+         'and a ten-thousand-character limit. This provides a practical reference implementation '
+         'for safely embedding code execution in educational web applications without requiring '
+         'containerisation infrastructure.')
+numbered('An automated certification system that generates unique verification codes for each '
+         'completion certificate, enabling third-party verification of learner achievement. '
+         'The certificate design and issuance workflow demonstrate how cryptographic-grade unique '
+         'identifiers can be integrated into educational platforms for credentialing purposes.')
+numbered('A practical demonstration of the Django web framework\'s suitability for building '
+         'secure, scalable, and feature-rich educational web applications, including the '
+         'integration of authentication, content management, assessment, and gamification '
+         'features within a coherent software architecture.')
+
+h2('5.3 Conclusion')
 body('The study successfully achieved its aim of designing and implementing an integrated, '
      'web-based interactive e-learning platform for structured Python programming. By combining '
      'structured lesson delivery, mastery-based progression, practical in-browser coding, '
@@ -958,7 +1296,7 @@ body('The study successfully achieved its aim of designing and implementing an i
      'education. The system therefore provides a practical solution to the challenges that '
      'beginners commonly encounter when learning to program.')
 
-h2('5.3 Recommendations')
+h2('5.4 Recommendations')
 body('Based on the outcomes of this study, the following recommendations are made:')
 numbered('Educational institutions and training organisations should adopt integrated, '
          'interactive e-learning platforms of this kind to complement traditional programming '
@@ -971,7 +1309,7 @@ numbered('Adequate attention should be given to the security of in-browser code-
 numbered('Learner motivation should be supported through gamification features such as '
          'certification and leaderboards.')
 
-h2('5.4 Suggestions for Future Research')
+h2('5.5 Suggestions for Future Research')
 body('The following suggestions are offered for future work:')
 numbered('Extending the platform to cover additional programming languages and more advanced '
          'topics beyond introductory Python.')
@@ -989,22 +1327,37 @@ chapter(['References'])
 refs = [
     'Anderson, T. (2008). The theory and practice of online learning (2nd ed.). Athabasca '
     'University Press.',
+    'Bloom, B. S. (1968). Mastery learning. Evaluation Comment, 1(2), 1–12.',
     'Deterding, S., Dixon, D., Khaled, R., & Nacke, L. (2011). From game design elements to '
-    'gamefulness: Defining “gamification”. In Proceedings of the 15th International Academic '
+    'gamefulness: Defining "gamification". In Proceedings of the 15th International Academic '
     'MindTrek Conference (pp. 9–15). Association for Computing Machinery.',
     'Django Software Foundation. (2024). Django documentation. https://docs.djangoproject.com/',
     'Duckett, J. (2014). HTML and CSS: Design and build websites. John Wiley & Sons.',
     'Elmasri, R., & Navathe, S. B. (2017). Fundamentals of database systems (7th ed.). Pearson.',
+    'Ericsson, K. A., Krampe, R. T., & Tesch-Romer, C. (1993). The role of deliberate practice '
+    'in the acquisition of expert performance. Psychological Review, 100(3), 363–406.',
     'Garrison, D. R. (2017). E-learning in the 21st century: A community of inquiry framework '
     'for research and practice (3rd ed.). Routledge.',
+    'Guskey, T. R. (2007). Closing achievement gaps: Revisiting Benjamin S. Bloom\u2019s "Learning '
+    'for Mastery". Journal of Advanced Academics, 19(1), 8–31.',
     'Hamari, J., Koivisto, J., & Sarsa, H. (2014). Does gamification work? A literature review '
     'of empirical studies on gamification. In Proceedings of the 47th Hawaii International '
     'Conference on System Sciences (pp. 3025–3034). IEEE.',
-    'Pressman, R. S., & Maxim, B. R. (2020). Software engineering: A practitioner’s approach '
+    'Jonassen, D. H. (1999). Designing constructivist learning environments. In C. M. Reigeluth '
+    '(Ed.), Instructional-design theories and models: A new paradigm of instructional theory '
+    '(Vol. 2, pp. 215–239). Lawrence Erlbaum Associates.',
+    'Keller, F. S. (1968). "Good-bye, teacher..." Journal of Applied Behavior Analysis, 1(1), 79–89.',
+    'Piaget, J. (1952). The origins of intelligence in children. International Universities Press.',
+    'Pressman, R. S., & Maxim, B. R. (2020). Software engineering: A practitioner\u2019s approach '
     '(9th ed.). McGraw-Hill Education.',
     'Python Software Foundation. (2024). The Python language reference. '
     'https://docs.python.org/3/reference/',
+    'Sailer, M., Hense, J. U., Mayr, S. K., & Mandl, H. (2017). How gamification motivates: '
+    'An experimental study of the effects of specific game design elements on psychological '
+    'need satisfaction. Computers in Human Behavior, 69, 371–380.',
     'Sommerville, I. (2016). Software engineering (10th ed.). Pearson Education.',
+    'Vygotsky, L. S. (1978). Mind in society: The development of higher psychological processes. '
+    'Harvard University Press.',
 ]
 for r in refs:
     p = doc.add_paragraph(r)

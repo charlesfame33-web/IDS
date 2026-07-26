@@ -189,7 +189,7 @@ mayor = {
     'supervisor': "'Dr. Adeolu Obamehinti'",
     'slides': [
         # --- Slide 2: Introduction ---
-        {'kicker': 'Slide 2', 'title': 'Introduction',
+        {'kicker': 'Slide 2', 'title': 'Introduction to the mayor4code E-Learning Platform',
          'items': [
              'E-learning has transformed education by enabling self-paced, learner-centred '
              'instruction beyond the physical classroom (Garrison, 2017).',
@@ -204,7 +204,7 @@ mayor = {
              'code playground, certificates, and a gamified leaderboard.',
          ]},
         # --- Slide 3: Motivation / Problem Statement ---
-        {'kicker': 'Slide 3', 'title': 'Motivation / Statement of the Problem',
+        {'kicker': 'Slide 3', 'title': 'Motivation and Problem Statement: Challenges in Programming Education',
          'items': [
              'Many free programming resources present content in an unstructured manner, '
              'leaving learners uncertain about the order in which topics should be studied.',
@@ -232,7 +232,7 @@ mayor = {
                    'Add progress tracking, certification, and a leaderboard',
                    'Evaluate functionality and usability through testing']},
         # --- Slide 5: Significance ---
-        {'kicker': 'Slide 5', 'title': 'Significance of the Study',
+        {'kicker': 'Slide 5', 'title': 'Significance of the Study: Educational, Technological, and Economic Impact',
          'items': [
              'Educational Impact: Promotes structured, self-paced learning with mastery-based '
              'progression and instant feedback, improving comprehension and skill acquisition.',
@@ -244,21 +244,21 @@ mayor = {
              'with an internet connection, regardless of location or financial means.',
          ]},
         # --- Slide 6: Literature Review ---
-        {'kicker': 'Slide 6', 'title': 'Literature Review',
+        {'kicker': 'Slide 6', 'title': 'Literature Review: E-Learning, Gamification, and Related Platforms',
          'items': [
              'E-learning systems support self-paced, learner-centred education and can be '
              'as effective as traditional instruction (Anderson, 2008; Garrison, 2017).',
-             'Interactive coding platforms with instant feedback significantly improve '
-             'programming education outcomes (Pressman & Maxim, 2020).',
+             'Constructivist theory (Piaget, 1952; Vygotsky, 1978) supports interactive, '
+             'scaffolded learning environments like mayor4code.',
+             'Mastery learning (Bloom, 1968; Guskey, 2007) validates the locked-progression '
+             'model that enforces prerequisite understanding.',
              'Gamification through certificates and leaderboards boosts learner engagement '
              'and motivation (Deterding et al., 2011; Hamari et al., 2014).',
-             'The Django framework provides rapid development with built-in security and '
-             'an object-relational mapper (Django Software Foundation, 2024).',
              'Gap: Few free platforms integrate structured lessons, a code playground, '
              'automated assessment, certification, and gamification in one system.',
          ]},
         # --- Slide 7: Methodology ---
-        {'kicker': 'Slide 7', 'title': 'Methodology',
+        {'kicker': 'Slide 7', 'title': 'Methodology: Agile Approach, Three-Tier Architecture, and System Flowchart',
          'kind': 'cards',
          'cards': [
              ('Approach', 'Agile SDLC \u2014 iterative development with continuous testing.'),
@@ -266,9 +266,9 @@ mayor = {
              ('Stack', 'Django, Python, HTML/CSS/JS; SQLite (dev) / PostgreSQL (prod).'),
              ('Progression', 'Each lesson unlocks after passing the prior quiz at \u226560%.'),
              ('Playground', 'User code runs in an isolated subprocess with a time limit.'),
-             ('Modules', 'Auth, Lessons, Quizzes, Playground, Certificates, Leaderboard.')]},
+             ('Flowchart', 'See Slide 10 for the complete system flowchart.')]},
         # --- Slide 8: Implementation (screenshots) ---
-        {'kicker': 'Slide 8', 'title': 'Implementation',
+        {'kicker': 'Slide 8', 'title': 'Implementation: System Interfaces (Screenshots)',
          'kind': 'screenshot',
          'items': [
               ('Figure 1: Lesson Interface',
@@ -279,7 +279,7 @@ mayor = {
                r'c:\Users\ALEXIS\Desktop\SENPAI\shots\mayor4code\07-playground.png'),
          ]},
         # --- Slide 9: Results & Discussion (screenshots) ---
-        {'kicker': 'Slide 9', 'title': 'Results & Discussion',
+        {'kicker': 'Slide 9', 'title': 'Results and Discussion: Testing Results and Performance Evaluation',
          'kind': 'screenshot',
          'items': [
               ('Figure 3: Quiz Interface',
@@ -289,41 +289,31 @@ mayor = {
                'Dashboard showing overall progress bar and lesson unlock status.',
                r'c:\Users\ALEXIS\Desktop\SENPAI\shots\mayor4code\05-dashboard.png'),
          ]},
-        # --- Slide 10: Contributions ---
-        {'kicker': 'Slide 10', 'title': 'Contributions to Knowledge',
+        # --- Slide 10: System Flowchart ---
+        {'kicker': 'Slide 10', 'title': 'System Flowchart: User Journey Through the Platform',
+         'kind': 'screenshot',
          'items': [
-             'An integrated e-learning platform combining structured lessons, a code '
-             'playground, automated assessment, and gamification in one system.',
-             'A mastery-based locked progression model that enforces understanding of '
-             'prerequisite concepts before advancement.',
-             'A secure in-browser code execution environment using isolated subprocesses '
-             'with time limits and operation safeguards.',
-             'An automated certification system with unique verification codes and a '
-             'gamified leaderboard for learner motivation.',
-             'Demonstration of the Django framework\u2019s capability for building '
-             'secure and scalable educational web applications.',
+              ('System Flowchart',
+               'Complete user journey from registration to certificate issuance.',
+               r'c:\Users\ALEXIS\Desktop\SENPAI\shots\mayor4code\flowchart.png'),
          ]},
-        # --- Slide 11: Conclusion + References ---
-        {'kicker': 'Slide 11', 'title': 'Conclusion / References',
+        # --- Slide 11: Conclusion + Contributions ---
+        {'kicker': 'Slide 11', 'title': 'Contributions to Knowledge and Conclusion',
          'kind': 'two',
-         'left_title': 'Conclusion',
-         'left': ['All objectives were achieved: structured lessons with locked progression, '
-                  'secure authentication, an interactive playground, automated quiz scoring, '
-                  'progress tracking, certification, and a leaderboard were implemented '
-                  'and verified through testing.',
-                  'The platform provides a practical solution to key challenges in '
-                  'introductory programming education.'],
-         'right_title': 'References',
-         'right': ['Anderson, T. (2008). The theory and practice of online learning (2nd ed.). '
-                   'Athabasca University Press.',
-                   'Deterding, S. et al. (2011). Gamification. Proc. MindTrek, 9\u201315.',
-                   'Django Software Foundation. (2024). Django docs. docs.djangoproject.com',
-                   'Duckett, J. (2014). HTML and CSS: Design and build websites. Wiley.',
-                   'Garrison, D. R. (2017). E-learning in the 21st century (3rd ed.). Routledge.',
-                   'Hamari, J. et al. (2014). Does gamification work? HICSS, 3025\u20133034.',
-                   'Pressman, R. S. & Maxim, B. R. (2020). Software engineering (9th ed.). '
-                   'McGraw-Hill.',
-                   'Sommerville, I. (2016). Software engineering (10th ed.). Pearson.']},
+         'left_title': 'Contributions',
+         'left': ['Integrated platform combining structured lessons, playground, '
+                  'assessment, certification, and gamification in one free system.',
+                  'Mastery-based locked progression enforcing prerequisite understanding.',
+                  'Secure in-browser code execution via isolated subprocesses.',
+                  'Automated certification with unique verification codes.',
+                  'Reference implementation of Django for educational web apps.'],
+         'right_title': 'Conclusion / Recommendations',
+         'right': ['All objectives were achieved: structured lessons with locked progression, '
+                   'secure authentication, interactive playground, automated quiz scoring, '
+                   'progress tracking, certification, and a leaderboard were implemented '
+                   'and verified through testing.',
+                   'Recommendations include adopting the platform for introductory programming, '
+                   'extending with more courses, and adding adaptive learning features.']},
     ],
 }
 
