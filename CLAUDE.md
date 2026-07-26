@@ -80,7 +80,7 @@ SENPAI/
   - `chore:` — maintenance, config, dependencies
   - `refactor:` — code restructuring
 - **Branch:** `main` for production, `dev/<feature>` for development
-- **Ignore:** `__pycache__/`, `data/raw/`, `data/processed/`, `models/*.pkl`, `.env`, `venv/`
+- **Ignore:** `__pycache__/`, `data/raw/`, `data/processed/`, `.env`, `venv/`
 
 ## 6. Build Script Naming
 
