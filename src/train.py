@@ -77,8 +77,10 @@ def main():
     os.makedirs(MODEL_DIR, exist_ok=True)
     joblib.dump(model, f"{MODEL_DIR}/xgb_baseline.pkl")
     joblib.dump(scaler, f"{MODEL_DIR}/scaler.pkl")
+    joblib.dump(X_train.columns.tolist(), f"{MODEL_DIR}/feature_columns.joblib")
     print(f"\nModel saved to {MODEL_DIR}/xgb_baseline.pkl")
     print(f"Scaler saved to {MODEL_DIR}/scaler.pkl")
+    print(f"Feature columns saved to {MODEL_DIR}/feature_columns.joblib")
 
 
 if __name__ == "__main__":

@@ -165,8 +165,8 @@ if "messages" not in st.session_state:
 def load_artifacts():
     model = joblib.load('models/xgb_baseline.pkl')
     scaler = joblib.load('models/scaler.pkl')
-    X_ref = pd.read_parquet('data/processed/X_train.parquet')
-    return model, scaler, X_ref.columns.tolist()
+    feature_cols = joblib.load('models/feature_columns.joblib')
+    return model, scaler, feature_cols
 
 model, scaler, feature_cols = load_artifacts()
 
