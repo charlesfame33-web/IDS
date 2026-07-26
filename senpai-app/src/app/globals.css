@@ -1,0 +1,338 @@
+@import "tailwindcss";
+
+/* ============================================================
+   SENPAI THEME ENGINE — 7 cinematic palettes
+   Every theme swaps the full variable set: backgrounds, glows,
+   accents, charts, particles. Default: Iron Man (Mark VII).
+   ============================================================ */
+
+:root {
+  /* Iron Man — crimson & gold on near-black */
+  --bg: #0b0507;
+  --bg-2: #1a0a0e;
+  --surface: rgba(255, 255, 255, 0.04);
+  --surface-strong: rgba(20, 10, 12, 0.72);
+  --border: rgba(255, 255, 255, 0.09);
+  --border-accent: rgba(225, 29, 46, 0.35);
+  --text: #f6f4f5;
+  --muted: #a89ba0;
+  --accent: #e11d2e;
+  --accent-2: #f5a623;
+  --glow: rgba(225, 29, 46, 0.45);
+  --glow-2: rgba(245, 166, 35, 0.25);
+  --positive: #34d399;
+  --neutral: #fbbf24;
+  --negative: #f87171;
+}
+
+[data-theme="hulk"] {
+  --bg: #04100a;
+  --bg-2: #0a2013;
+  --surface: rgba(163, 230, 53, 0.05);
+  --surface-strong: rgba(6, 24, 14, 0.72);
+  --border: rgba(163, 230, 53, 0.12);
+  --border-accent: rgba(34, 197, 94, 0.4);
+  --text: #f0fdf4;
+  --muted: #8fae9a;
+  --accent: #22c55e;
+  --accent-2: #a3e635;
+  --glow: rgba(34, 197, 94, 0.45);
+  --glow-2: rgba(163, 230, 53, 0.25);
+}
+
+[data-theme="captain"] {
+  --bg: #060d1f;
+  --bg-2: #0c1a3a;
+  --surface: rgba(148, 187, 255, 0.05);
+  --surface-strong: rgba(8, 16, 38, 0.72);
+  --border: rgba(148, 187, 255, 0.12);
+  --border-accent: rgba(79, 142, 247, 0.4);
+  --text: #f2f6ff;
+  --muted: #93a3c4;
+  --accent: #4f8ef7;
+  --accent-2: #e11d2e;
+  --glow: rgba(79, 142, 247, 0.45);
+  --glow-2: rgba(225, 29, 46, 0.22);
+}
+
+[data-theme="moonknight"] {
+  --bg: #101216;
+  --bg-2: #1b1e25;
+  --surface: rgba(232, 234, 240, 0.05);
+  --surface-strong: rgba(22, 24, 30, 0.72);
+  --border: rgba(232, 234, 240, 0.12);
+  --border-accent: rgba(232, 234, 240, 0.3);
+  --text: #f4f5f8;
+  --muted: #9aa3b5;
+  --accent: #e8eaf0;
+  --accent-2: #9aa3b5;
+  --glow: rgba(232, 234, 240, 0.3);
+  --glow-2: rgba(154, 163, 181, 0.2);
+}
+
+[data-theme="strange"] {
+  --bg: #0c0614;
+  --bg-2: #1c0e2e;
+  --surface: rgba(168, 85, 247, 0.06);
+  --surface-strong: rgba(20, 10, 34, 0.72);
+  --border: rgba(168, 85, 247, 0.14);
+  --border-accent: rgba(168, 85, 247, 0.4);
+  --text: #f8f4ff;
+  --muted: #a89ac0;
+  --accent: #a855f7;
+  --accent-2: #fb923c;
+  --glow: rgba(168, 85, 247, 0.45);
+  --glow-2: rgba(251, 146, 60, 0.25);
+}
+
+[data-theme="thor"] {
+  --bg: #040a1e;
+  --bg-2: #0a1638;
+  --surface: rgba(34, 211, 238, 0.05);
+  --surface-strong: rgba(6, 14, 36, 0.72);
+  --border: rgba(34, 211, 238, 0.13);
+  --border-accent: rgba(34, 211, 238, 0.4);
+  --text: #f0fbff;
+  --muted: #8fa5c4;
+  --accent: #22d3ee;
+  --accent-2: #facc15;
+  --glow: rgba(34, 211, 238, 0.45);
+  --glow-2: rgba(250, 204, 21, 0.25);
+}
+
+[data-theme="venom"] {
+  --bg: #000000;
+  --bg-2: #0a0f14;
+  --surface: rgba(56, 189, 248, 0.05);
+  --surface-strong: rgba(4, 8, 12, 0.78);
+  --border: rgba(248, 250, 252, 0.1);
+  --border-accent: rgba(56, 189, 248, 0.4);
+  --text: #f8fafc;
+  --muted: #8b98a5;
+  --accent: #38bdf8;
+  --accent-2: #f8fafc;
+  --glow: rgba(56, 189, 248, 0.45);
+  --glow-2: rgba(248, 250, 252, 0.15);
+}
+
+/* Map theme variables into Tailwind tokens (v4) */
+@theme inline {
+  --color-bg: var(--bg);
+  --color-bg-2: var(--bg-2);
+  --color-surface: var(--surface);
+  --color-border-base: var(--border);
+  --color-text-base: var(--text);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-accent-2: var(--accent-2);
+  --color-positive: var(--positive);
+  --color-neutral-s: var(--neutral);
+  --color-negative: var(--negative);
+  --font-sans: var(--font-inter);
+  --font-display: var(--font-space);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-inter), system-ui, sans-serif;
+  transition: background-color 0.8s ease, color 0.8s ease;
+  overflow-x: hidden;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--bg);
+}
+
+/* Themed scrollbar */
+::-webkit-scrollbar {
+  width: 9px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--accent) 45%, transparent);
+  border-radius: 9999px;
+  border: 2px solid var(--bg);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
+}
+
+/* ============ Cinematic utilities ============ */
+
+.glass {
+  background: var(--surface);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border);
+  transition: background-color 0.8s ease, border-color 0.8s ease,
+    box-shadow 0.4s ease;
+}
+
+.glass-strong {
+  background: var(--surface-strong);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--border);
+  transition: background-color 0.8s ease, border-color 0.8s ease;
+}
+
+.glow-accent {
+  box-shadow: 0 0 40px -8px var(--glow);
+}
+
+.glow-ring {
+  box-shadow: 0 0 0 1px var(--border-accent), 0 0 60px -12px var(--glow),
+    inset 0 0 24px -18px var(--glow);
+}
+
+.text-gradient {
+  background: linear-gradient(
+    120deg,
+    var(--text) 20%,
+    var(--accent) 55%,
+    var(--accent-2) 85%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.text-gradient-silver {
+  background: linear-gradient(180deg, #ffffff 0%, #b8bfcc 60%, #7c8494 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Aurora blobs behind hero */
+.aurora {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(90px);
+  opacity: 0.5;
+  pointer-events: none;
+  transition: background-color 0.8s ease;
+}
+.aurora-1 {
+  background: var(--glow);
+  animation: aurora-drift 14s ease-in-out infinite;
+}
+.aurora-2 {
+  background: var(--glow-2);
+  animation: aurora-drift 18s ease-in-out infinite reverse;
+}
+
+@keyframes aurora-drift {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(60px, -40px) scale(1.15);
+  }
+  66% {
+    transform: translate(-40px, 30px) scale(0.9);
+  }
+}
+
+/* HUD grid overlay */
+.grid-overlay {
+  background-image: linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, black 30%, transparent 75%);
+  -webkit-mask-image: radial-gradient(
+    ellipse 80% 60% at 50% 40%,
+    black 30%,
+    transparent 75%
+  );
+}
+
+/* Floating animation for hero cards */
+@keyframes float-y {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-14px);
+  }
+}
+.animate-float {
+  animation: float-y 6s ease-in-out infinite;
+}
+.animate-float-slow {
+  animation: float-y 9s ease-in-out infinite;
+}
+
+/* Status pulse dot */
+@keyframes pulse-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 var(--glow);
+  }
+  50% {
+    box-shadow: 0 0 0 6px transparent;
+  }
+}
+.pulse-dot {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* Review ticker marquee */
+@keyframes ticker-x {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+.animate-ticker {
+  animation: ticker-x 40s linear infinite;
+}
+.animate-ticker:hover {
+  animation-play-state: paused;
+}
+
+/* Scanline sweep for "AI scanning" effects */
+@keyframes scan-y {
+  0% {
+    top: -10%;
+  }
+  100% {
+    top: 110%;
+  }
+}
+.scanline {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  opacity: 0.6;
+  animation: scan-y 3.5s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aurora-1,
+  .aurora-2,
+  .animate-float,
+  .animate-float-slow,
+  .animate-ticker,
+  .scanline,
+  .pulse-dot {
+    animation: none;
+  }
+  html {
+    scroll-behavior: auto;
+  }
+}
