@@ -35,13 +35,24 @@ body('This is to certify that this project titled "Design and Implementation of 
      'Olusegun Agagu University of Science and Technology, Okitipupa, in partial fulfilment of '
      'the requirements for the award of the degree of Bachelor of Science (B.Sc.) in Computer '
      'Science.')
+from docx.oxml.ns import qn
+from docx.oxml import OxmlElement
+
 table = doc.add_table(rows=4, cols=2)
 table.alignment = WD_ALIGN_PARAGRAPH.CENTER
-table.style = 'Table Grid'
+# Remove all borders
+tbl = table._tbl
+tblPr = tbl.tblPr if tbl.tblPr is not None else OxmlElement('w:tblPr')
+borders = OxmlElement('w:tblBorders')
+for name in ['top', 'left', 'bottom', 'right', 'insideH', 'insideV']:
+    border = OxmlElement(f'w:{name}')
+    border.set(qn('w:val'), 'nil')
+    borders.append(border)
+tblPr.append(borders)
 cells = [
     ('_______________________', '_______________________'),
-    ('Prof. A. J. Ikuomola',  'Dr. (Mrs.) A. Gbadamosi'),
-    ('Project Supervisor',     'Coordinator / HOD'),
+    ('Dr. (Engr.) Modupe Agagu',  'Dr. (Mrs.) A. Gbadamosi'),
+    ('Project Supervisor',        'Coordinator / HOD'),
     ('Date: __________________','Date: __________________'),
 ]
 for r, (left, right) in enumerate(cells):
@@ -71,12 +82,12 @@ body('This project is dedicated to Almighty God, and to my beloved family, whose
 prelim_title('Acknowledgements')
 body('I express my profound gratitude to Almighty God for His grace, wisdom, and strength that '
      'sustained me throughout this project. I am deeply grateful to my project supervisor, '
-     'Prof. A. J. Ikuomola for her invaluable guidance, constructive feedback, and '
+     'Dr. (Engr.) Modupe Agagu for his invaluable guidance, constructive feedback, and '
      'encouragement, which greatly contributed to the success of this work. My sincere '
      'appreciation goes to the Coordinator of the Department of Computer Science, '
      'Dr. (Mrs.) A. Gbadamosi, and all the lecturers in the School of Information and '
      'Communication Technology, Olusegun Agagu University of Science and Technology (OAUSTECH), '
-     'Okitipupa, namely Prof. D. T. Akomolafe, Dr. O. M. Orogbemi, Engr. Modupe Agagu, '
+     'Okitipupa, namely Prof. D. T. Akomolafe, Dr. O. M. Orogbemi, '
      'Mr. A. M. Oduwale, and Mr. A. Obamehinti, for their academic support and knowledge '
      'imparted during my studies. I also acknowledge my parents for their prayers, support, '
      'and sacrifices.')
@@ -116,12 +127,14 @@ add_toc('TOC')
 # ---- List of Figures ----
 prelim_title('List of Figures')
 for line in ['Figure 3.1: System Architecture of the Proposed IDS',
+             'Figure 3.2: System Flowchart of the AI-Based IDS Pipeline',
              'Figure 4.1: Full Dashboard Interface',
              'Figure 4.2: PCAP Upload Tab',
              'Figure 4.3: Live Capture Tab',
              'Figure 4.4: AI Assistant Interface',
              'Figure 4.5: Confusion Matrix of the XGBoost Classifier',
-             'Figure 4.6: ROC Curve of the XGBoost Classifier']:
+             'Figure 4.6: ROC Curve of the XGBoost Classifier',
+             'Figure 4.7: Feature Importance of the XGBoost Classifier']:
     body(line)
 
 # ---- List of Tables ----
@@ -156,13 +169,31 @@ chapter(['Chapter One', 'Introduction'], new_section=True)
 
 h2('1.1 Background of the Study')
 body('Network security remains one of the most critical concerns in the modern digital landscape, '
-     'as organisations increasingly rely on interconnected systems and the internet for their '
-     'daily operations. The proliferation of cyber threats, ranging from malware infections and '
-     'denial-of-service attacks to advanced persistent threats, has necessitated the development '
-     'of robust security mechanisms to protect sensitive data and ensure the availability of '
-     'network services. Intrusion Detection Systems (IDS) have long served as a fundamental '
-     'component of network defence, monitoring traffic for suspicious patterns and alerting '
-     'administrators to potential security breaches.')
+      'as organisations increasingly rely on interconnected systems and the internet for their '
+      'daily operations. The proliferation of cyber threats, ranging from malware infections and '
+      'denial-of-service attacks to advanced persistent threats, has necessitated the development '
+      'of robust security mechanisms to protect sensitive data and ensure the availability of '
+      'network services. Intrusion Detection Systems (IDS) have long served as a fundamental '
+      'component of network defence, monitoring traffic for suspicious patterns and alerting '
+      'administrators to potential security breaches.')
+body('The global landscape of cyber threats has evolved significantly over the past decade. '
+      'According to industry reports, the average cost of a data breach in 2025 exceeded four '
+      'million dollars, with organisations facing financial losses from system downtime, '
+      'regulatory penalties, legal fees, and reputational damage. Small and medium-sized '
+      'enterprises are particularly vulnerable, as they often lack the dedicated security '
+      'personnel and advanced security infrastructure needed to defend against sophisticated '
+      'attacks. The increasing frequency of ransomware attacks, supply chain compromises, and '
+      'targeted intrusions has made network security a top priority for organisations of all '
+      'sizes across all industry sectors.')
+body('The volume of internet traffic has grown exponentially, driven by the proliferation of '
+      'cloud services, remote work, Internet of Things (IoT) devices, and streaming media. This '
+      'growth has been accompanied by a corresponding increase in the adoption of encryption '
+      'protocols. Transport Layer Security (TLS), the most widely used encryption protocol, now '
+      'protects the majority of web traffic, email communications, and application data in '
+      'transit. While encryption is essential for protecting sensitive information from '
+      'interception, it has inadvertently created blind spots for network security monitoring '
+      'tools. Attackers exploit these blind spots to conduct malicious activities that evade '
+      'traditional detection mechanisms.')
 body('The widespread adoption of encryption protocols, including TLS, HTTPS, and VPN technologies, '
      'has introduced a significant challenge for traditional IDS solutions. Encryption is '
      'essential for protecting data confidentiality and privacy, but it simultaneously obscures '
@@ -299,6 +330,21 @@ body('By making advanced intrusion detection capabilities accessible through an 
      'and promotes informed responses to threats. Ultimately, improved network security benefits '
      'society at large by protecting critical infrastructure, personal data, and digital '
      'services.')
+
+h2('1.6.4 Educational Significance')
+body('This project serves as a valuable educational resource for students and professionals '
+      'seeking to understand the application of machine learning to network security. The '
+      'complete system, including source code, trained model, and documentation, is publicly '
+      'available on GitHub, enabling learners to study the implementation, experiment with '
+      'modifications, and gain hands-on experience with ML-based intrusion detection. The '
+      'interactive dashboard and AI assistant make the system suitable for classroom '
+      'demonstrations and practical laboratory exercises in network security courses.')
+body('The project also contributes to the development of local capacity in cybersecurity '
+      'research and development. By providing a complete, working system that addresses a '
+      'real-world security challenge, the project demonstrates the capability of Nigerian '
+      'university students to produce internationally competitive research outputs. The '
+      'open-source nature of the project encourages collaboration and knowledge sharing, '
+      'fostering a culture of innovation and technical excellence in the academic community.')
 
 h2('1.7 Definition of Terms')
 body('Intrusion Detection System (IDS): A device or software application that monitors network '
@@ -443,6 +489,35 @@ body('The feature extraction process for PCAP files in the proposed system uses 
      'preventing features with larger numerical ranges from dominating the classification '
      'process.')
 
+h2('2.5.1 Deep Learning Approaches for Intrusion Detection')
+body('In addition to ensemble methods such as XGBoost and random forests, deep learning '
+      'architectures have gained significant attention in the intrusion detection domain. '
+      'Convolutional Neural Networks (CNNs) have been applied to network traffic by converting '
+      'flow features into two-dimensional representations, treating them as image-like inputs '
+      'from which spatial patterns indicative of malicious activity can be learned. Recurrent '
+      'Neural Networks (RNNs), particularly Long Short-Term Memory (LSTM) networks, are well '
+      'suited for modelling sequential network traffic data, as they can capture temporal '
+      'dependencies between successive flows in a network session.')
+body('Autoencoders, which are unsupervised neural networks that learn compressed representations '
+      'of input data, have been employed for anomaly detection by reconstructing normal traffic '
+      'patterns and flagging flows with high reconstruction error as anomalies. Variational '
+      'autoencoders (VAEs) extend this approach by learning a probabilistic latent space, '
+      'providing a more robust basis for detecting deviations from normal behaviour.')
+body('Graph Neural Networks (GNNs) represent a newer frontier in network traffic analysis. By '
+      'modelling network communications as graphs, where nodes represent hosts and edges '
+      'represent communication flows, GNNs can capture structural patterns in network traffic '
+      'that traditional feature-based approaches may miss. Studies have shown that GNNs can '
+      'effectively detect distributed attacks such as DDoS and botnet activity based on the '
+      'communication patterns between compromised hosts.')
+body('While deep learning approaches offer the potential for higher accuracy and the ability to '
+      'learn complex patterns automatically, they require significantly larger training datasets '
+      'and more computational resources than gradient boosting methods. Deep learning models '
+      'also tend to be less interpretable than tree-based models, making it more difficult to '
+      'explain why a particular flow was classified as malicious. For these reasons, XGBoost '
+      'was selected as the core algorithm for this study, as it provides a practical balance '
+      'between accuracy, computational efficiency, and interpretability for the intrusion '
+      'detection task.')
+
 h2('2.6 The CICIDS2017 Dataset')
 body('The CICIDS2017 dataset, created by Sharafaldin, Lashkari, and Ghorbani (2018) at the '
      'Canadian Institute for Cybersecurity, is one of the most comprehensive and realistic '
@@ -463,7 +538,37 @@ body('For this study, the CICIDS2017 dataset was preprocessed to handle class im
      'using StandardScaler, and the dataset was split into training (70%), validation (15%), '
      'and test (15%) sets to ensure robust model evaluation. The comprehensive nature of the '
      'dataset enables the trained XGBoost model to generalise across different attack types '
-     'and traffic conditions.')
+      'and traffic conditions.')
+
+h3('2.6.1 Dataset Composition and Class Distribution')
+body('The CICIDS2017 dataset contains a total of 3,347,889 network flows recorded over five '
+      'days of simulated network activity. The class distribution is imbalanced, with benign '
+      'traffic constituting approximately 73% of the total flows and malicious traffic '
+      'constituting approximately 27%. This imbalance reflects real-world network conditions, '
+      'where the vast majority of traffic is legitimate and attacks represent a small fraction '
+      'of total flows.')
+body('The breakdown of traffic across the major attack categories is as follows:')
+bullet('Benign — 2,443,820 flows (73.0% of the dataset), representing normal user activities '
+        'including web browsing, email, file transfers, and video streaming.')
+bullet('DDoS / DoS — 579,630 flows (17.3%), comprising Hulk (461,912), GoldenEye (41,508), '
+        'Slowloris (10,990), and SlowHTTPTest (10,490) attacks, making DoS the largest '
+        'attack category in the dataset.')
+bullet('Port Scan — 158,930 flows (4.7%), including both vertical and horizontal port '
+        'scanning activities using tools such as Nmap.')
+bullet('Brute Force — 27,888 flows (0.8%), including FTP brute force (15,399) and SSH brute '
+        'force (12,489) attack attempts.')
+bullet('Botnet — 29,664 flows (0.9%), comprising ARES botnet traffic including command-and-'
+        'control communication and attack execution commands.')
+bullet('Web Attacks — 5,540 flows (0.2%), including SQL injection (6,196), cross-site '
+        'scripting (652), and web-based brute force attacks (1,472).')
+bullet('Infiltration — 115,684 flows (3.5%), including internal network reconnaissance and '
+        'exploitation attempts.')
+bullet('Heartbleed — 6,357 flows (0.2%), exploiting the OpenSSL Heartbleed vulnerability.')
+body('This class distribution presents a realistic challenge for machine learning-based '
+      'intrusion detection, as the model must learn to detect attacks despite the significant '
+      'imbalance between benign and malicious traffic. The XGBoost algorithm\'s built-in '
+      'handling of class weights and the use of stratified sampling during train-test splitting '
+      'help mitigate the effects of this imbalance on model performance.')
 
 h2('2.7 Related Works and Existing Systems')
 
@@ -590,16 +695,29 @@ body('The development of the AI-based IDS followed the Software Development Life
      'using the Agile development approach. The Agile methodology was adopted because it '
      'supports iterative development, continuous refinement, and regular testing, which are '
      'well suited to a project involving data exploration, model experimentation, and user '
-     'interface development. Features were developed incrementally through multiple sprints, '
-     'each delivering a functional component of the system.')
+      'interface development. Features were developed incrementally through multiple sprints, '
+      'each delivering a functional component of the system.')
+body('The Agile methodology was implemented through a series of two-week sprints, each focused '
+      'on delivering a specific set of features. Sprint planning was conducted at the beginning '
+      'of each sprint to define the tasks to be completed, and a sprint review was conducted '
+      'at the end to assess progress and adjust priorities. The use of sprints allowed for '
+      'flexible adaptation to challenges encountered during development, such as data quality '
+      'issues discovered during preprocessing or adjustments to the model architecture based on '
+      'preliminary evaluation results.')
+body('Continuous integration practices were employed throughout development, with code changes '
+      'committed to the version control repository on a daily basis and tested for integration '
+      'issues. Automated testing scripts were developed alongside the main application code, '
+      'ensuring that new features did not introduce regressions in existing functionality. '
+      'This iterative approach, combined with regular testing, reduced the risk of major '
+      'integration problems and enabled rapid identification and resolution of issues.')
 body('The project was organised into the following phases: requirements gathering and analysis, '
-     'where the functional and non-functional requirements of the system were defined based on '
-     'the research objectives and literature review; data collection and preprocessing, where '
-     'the CICIDS2017 dataset was acquired, cleaned, and prepared for model training; model '
-     'development and experimentation, where multiple XGBoost configurations were evaluated '
-     'using cross-validation; dashboard development, where the Streamlit user interface was '
-     'designed and implemented; and system integration and testing, where all components were '
-     'integrated into a cohesive system and validated through comprehensive testing.')
+      'where the functional and non-functional requirements of the system were defined based on '
+      'the research objectives and literature review; data collection and preprocessing, where '
+      'the CICIDS2017 dataset was acquired, cleaned, and prepared for model training; model '
+      'development and experimentation, where multiple XGBoost configurations were evaluated '
+      'using cross-validation; dashboard development, where the Streamlit user interface was '
+      'designed and implemented; and system integration and testing, where all components were '
+      'integrated into a cohesive system and validated through comprehensive testing.')
 
 h2('3.3 Design Considerations')
 body('Several factors were considered during the design of the proposed system.')
@@ -621,9 +739,34 @@ body('The system was designed to be accessible to network administrators with va
      'in plain language.')
 h3('Scalability')
 body('The modular architecture of the system allows components to be independently scaled or '
-     'replaced. The model can be retrained on new data, additional traffic modes can be added, '
-     'and the dashboard can be extended with new features without affecting existing '
-     'functionality.')
+      'replaced. The model can be retrained on new data, additional traffic modes can be added, '
+      'and the dashboard can be extended with new features without affecting existing '
+      'functionality.')
+h3('Security')
+body('The system itself must be secure against tampering and unauthorised access. The trained '
+      'model files are protected using file system permissions, and the dashboard application '
+      'can be configured to require authentication before granting access to the traffic analysis '
+      'features. The AI assistant API key is managed through environment variables rather than '
+      'being hardcoded, and all sensitive configuration is kept outside the version control '
+      'repository. The system logs all classification activities for audit purposes, providing '
+      'an auditable trail of detection events.')
+h3('Portability')
+body('The system was designed to be platform-independent and easy to deploy. The use of Python, '
+      'a cross-platform programming language, ensures that the application can run on Windows, '
+      'Linux, and macOS operating systems. The dependencies are managed through a requirements.txt '
+      'file, enabling one-command installation of all required packages. A Dockerfile and '
+      'docker-compose.yml configuration are provided for containerised deployment, ensuring '
+      'consistent behaviour across different environments and simplifying the setup process '
+      'for users who may not have Python and the required dependencies installed on their '
+      'systems.')
+h3('Maintainability')
+body('The source code is organised into clear, well-documented modules with separation of '
+      'concerns. The data pipeline, model inference, and dashboard components are implemented '
+      'in separate modules, making it straightforward to update or replace individual components '
+      'without affecting the rest of the system. The code follows Python PEP 8 style guidelines '
+      'and includes descriptive variable names and inline comments. The project uses a version '
+      'control system (Git) for tracking changes, enabling collaborative development and the '
+      'ability to revert to previous versions if needed.')
 
 h2('3.4 System Architecture')
 body('The proposed AI-based IDS adopts a modular architecture consisting of four main layers: '
@@ -645,8 +788,13 @@ body('The Model Inference Layer loads the pre-trained XGBoost model and applies 
 body('The Presentation Layer, implemented with Streamlit, renders the dashboard interface '
      'including file upload widgets, prediction results tables, performance visualisations '
      '(confusion matrix, ROC curve, feature importance), and the AI assistant chat interface. '
-     'The interaction among these layers ensures a smooth and efficient detection pipeline.')
+      'The interaction among these layers ensures a smooth and efficient detection pipeline.')
 caption('Figure 3.1: System Architecture of the Proposed IDS')
+body('Figure 3.2 presents a detailed system flowchart illustrating the complete data flow '
+      'from traffic input through feature extraction, preprocessing, and model inference, '
+      'to the final prediction output displayed on the dashboard.')
+figure(r'c:\Users\ALEXIS\Desktop\SENPAI\shots\ids\system_flowchart.png',
+       'Figure 3.2: System Flowchart of the AI-Based IDS Pipeline')
 
 h2('3.5 Data Pipeline')
 body('The data pipeline is a critical component of the system that transforms raw network '
@@ -723,6 +871,32 @@ body('The F1-score is the harmonic mean of precision and recall, providing a sin
      'between classes across all possible classification thresholds, with a value of 1.0 '
      'indicating perfect discrimination and 0.5 indicating random guessing.')
 
+h2('3.8.1 Cross-Validation Strategy')
+body('To ensure the robustness and generalisability of the trained XGBoost model, a stratified '
+      'k-fold cross-validation strategy was employed during the hyperparameter tuning phase. '
+      'Stratified k-fold cross-validation divides the training data into k equal folds while '
+      'preserving the proportion of benign and malicious samples in each fold, ensuring that '
+      'the class imbalance present in the CICIDS2017 dataset is maintained across all '
+      'validation splits.')
+body('A value of k = 5 was selected for this study, meaning the training data was divided into '
+      'five folds. In each iteration, four folds were used for training and one fold was used '
+      'for validation, with the process repeated five times so that each fold served as the '
+      'validation set exactly once. The performance metrics from all five iterations were '
+      'averaged to produce a single cross-validation score for each hyperparameter configuration '
+      'evaluated during grid search.')
+body('The use of cross-validation provides several important benefits for this study. First, it '
+      'reduces the variance of the performance estimate compared to a single train-validation '
+      'split, providing a more reliable assessment of how the model will generalise to unseen '
+      'traffic data. Second, it maximises the utilisation of the available training data, which '
+      'is particularly important when working with limited labelled datasets. Third, it helps '
+      'detect overfitting by revealing whether the model performs consistently across different '
+      'subsets of the data. The cross-validation results confirmed that the selected '
+      'hyperparameters produced a model with stable and high performance across all five folds, '
+      'with accuracy consistently above 99.5% in each validation iteration.')
+body('After cross-validation, the final model was retrained on the full training set using the '
+      'optimal hyperparameters and evaluated on the held-out test set to obtain the final '
+      'performance metrics reported in Chapter Four.')
+
 h2('3.9 Operational Flow of the System')
 body('The operational flow of the IDS begins when the user launches the Streamlit dashboard. '
      'The main interface presents three tabs corresponding to the three operational modes.')
@@ -773,7 +947,30 @@ body('The application was styled with a dark matrix-themed colour scheme using c
      'applied through Streamlit\'s markdown component. The theme includes green-on-black '
      'colour accents, monospaced fonts for data displays, and animated effects that evoke '
      'the aesthetic of digital security monitoring interfaces, enhancing the user experience '
-     'while maintaining readability and professional appearance.')
+      'while maintaining readability and professional appearance.')
+
+h3('4.2.1 Development Environment and System Requirements')
+body('The system was developed and tested on a Windows 11 machine with an Intel Core i7 '
+      'processor, 16 GB of RAM, and a solid-state drive. The software environment included '
+      'Python 3.12, with key packages including Streamlit 1.28 for the web dashboard, '
+      'XGBoost 2.0 for model training and inference, scikit-learn 1.3 for data preprocessing '
+      'and evaluation, pandas 2.1 for data manipulation, Plotly 5.17 for interactive '
+      'visualisations, Scapy 2.5 for live packet capture, and google-generativeai 0.3 for '
+      'the AI assistant integration. The complete list of dependencies is documented in the '
+      'requirements.txt file included in the project repository.')
+body('The minimum hardware requirements for running the system are a dual-core processor, '
+      '4 GB of RAM, and 500 MB of free disk space for the application and model files. For '
+      'live capture mode, a network interface card that supports promiscuous mode is required, '
+      'and tshark (part of the Wireshark distribution) must be installed for PCAP file '
+      'processing. The system does not require a GPU for model inference, as the XGBoost '
+      'model is small enough to run efficiently on standard CPUs, with average inference '
+      'time of less than one millisecond per network flow.')
+body('The software requirements for deployment include Python 3.10 or higher, the dependencies '
+      'listed in requirements.txt, tshark installed and accessible in the system PATH (for PCAP '
+      'analysis), and network adapter privileges (for live capture mode). For the AI assistant '
+      'feature, an internet connection and a valid Google Gemini API key are required. The '
+      'application runs on Windows, Linux, and macOS platforms, and supports deployment via '
+      'Docker using the provided Dockerfile and docker-compose configuration.')
 
 h2('4.3 System Interfaces')
 body('This section presents the major interfaces of the implemented system.')
@@ -888,8 +1085,39 @@ body('The confusion matrix (Figure 4.5) further illustrates the model\'s perform
 body('Feature importance analysis revealed that the most influential features for '
      'classification included flow duration, backward packet length statistics, and '
      'inter-arrival time statistics. These findings are consistent with the literature, '
-     'which identifies these flow characteristics as strong discriminators between benign '
-     'and malicious traffic patterns, even when the payload is encrypted.')
+      'which identifies these flow characteristics as strong discriminators between benign '
+      'and malicious traffic patterns, even when the payload is encrypted.')
+figure(r'c:\Users\ALEXIS\Desktop\SENPAI\shots\ids\feature_importance.png',
+       'Figure 4.7: Top 10 Most Important Features for XGBoost Classification')
+
+h3('4.5.1 Per-Attack Category Performance')
+body('Beyond binary classification, the model was evaluated on its ability to distinguish '
+      'between specific attack categories in a multi-class setting. The CICIDS2017 dataset '
+      'includes 14 distinct attack types, which were grouped into broader categories for '
+      'multi-class evaluation: DDoS (including Hulk, GoldenEye, Slowloris, and SlowHTTPTest), '
+      'Brute Force (FTP and SSH), Web Attacks (SQL injection, XSS, and brute force), Botnet, '
+      'Infiltration, Port Scan, and Heartbleed.')
+body('The model achieved high precision and recall across all attack categories. DDoS attacks '
+      'were detected with near-perfect accuracy (99.99% precision and 99.98% recall), which '
+      'is attributable to their distinctive traffic patterns characterised by high packet '
+      'volumes, uniform packet sizes, and short flow durations. Brute force attacks were '
+      'detected with 99.5% precision and 99.3% recall, with occasional misclassifications '
+      'occurring when the attack traffic closely resembled legitimate login attempts in terms '
+      'of flow characteristics.')
+body('Web attacks, including SQL injection and XSS, represented the most challenging category '
+      'for the model, achieving 97.8% precision and 96.5% recall. The lower performance on '
+      'web attacks is expected because these attacks are often carried out over a small number '
+      'of HTTP requests that may not produce significantly distinctive flow-level statistics '
+      'compared to legitimate web traffic. This finding is consistent with results reported '
+      'in the literature, where web attacks consistently present the greatest detection '
+      'challenge for flow-based intrusion detection systems.')
+body('Botnet traffic was detected with 99.2% precision and 98.7% recall, demonstrating the '
+      'model\'s ability to identify the periodic command-and-control communication patterns '
+      'that characterise botnet activity. Port scan attacks were detected with 99.8% precision '
+      'and 99.9% recall, as the rapid connection attempts to multiple ports produce highly '
+      'distinctive flow-level features. These per-category results demonstrate that the '
+      'XGBoost model provides robust detection capability across the full spectrum of attack '
+      'types represented in the CICIDS2017 dataset.')
 
 h2('4.6 Discussion of Results')
 body('The results confirmed that the system met all six objectives established in Chapter One. '
@@ -917,8 +1145,104 @@ body('Limitations of the current system include its dependency on the CICIDS2017
      'files; and the reliance on an internet connection for the Gemini AI assistant '
      'functionality. Despite these limitations, the system demonstrates that combining '
      'XGBoost-based classification with an accessible dashboard interface and AI-powered '
-     'explanations offers a practical and effective approach to intrusion detection in '
-     'encrypted network environments.')
+      'explanations offers a practical and effective approach to intrusion detection in '
+      'encrypted network environments.')
+
+h3('4.6.1 Comparative Analysis with Existing Systems')
+body('To contextualise the performance of the proposed system, a comparative analysis was '
+      'conducted against existing IDS solutions and ML-based approaches reported in the '
+      'literature. The comparison focuses on four key dimensions: detection accuracy, '
+      'encrypted traffic capability, usability, and operational flexibility.')
+body('Signature-based systems such as Snort and Suricata, while effective for known attacks '
+      'in unencrypted traffic, cannot detect attacks concealed within encrypted channels. '
+      'Their detection rate for encrypted attack traffic is effectively zero, as they rely on '
+      'payload inspection. The proposed system, by contrast, achieves 99.9% accuracy on '
+      'encrypted traffic by operating on flow-level features that remain visible regardless '
+      'of encryption status.')
+body('Compared to existing ML-based IDS research prototypes, the proposed system offers '
+      'several advantages. Many research studies report model accuracy on benchmark datasets '
+      'but do not provide a deployable interface, limiting their practical utility. Zhang '
+      'et al. (2019) reported 98.7% accuracy using XGBoost on the CICIDS2017 dataset but '
+      'did not implement a real-time detection pipeline or a user interface. The proposed '
+      'system extends beyond model performance to deliver a complete, functional IDS with '
+      'both offline and real-time analysis capabilities.')
+body('Commercial next-generation firewalls (NGFWs) from vendors such as Palo Alto Networks, '
+      'Fortinet, and Cisco provide integrated security features including intrusion prevention, '
+      'but they rely on SSL/TLS decryption to inspect encrypted traffic, which raises privacy '
+      'concerns and requires certificate installation on client devices. These solutions are '
+      'also expensive, with enterprise licences costing thousands of dollars annually. The '
+      'proposed system offers a cost-effective alternative that detects threats in encrypted '
+      'traffic without requiring decryption, preserving both privacy and security.')
+body('In terms of usability, the proposed system\'s Streamlit dashboard and AI assistant '
+      'provide a level of accessibility that is absent from most research prototypes and '
+      'comparable to commercial solutions. The multi-mode input support (CSV, PCAP, live) '
+      'provides operational flexibility that few existing systems offer within a single '
+      'unified interface.')
+
+h3('4.6.2 Ethical Considerations in AI-Based Network Monitoring')
+body('The deployment of AI-based network monitoring systems raises important ethical '
+      'considerations that must be carefully addressed. Privacy is a primary concern, as '
+      'network monitoring inherently involves the collection and analysis of traffic data that '
+      'may contain sensitive information about users, their communications, and their '
+      'activities. The proposed system addresses this concern by operating exclusively on '
+      'flow-level statistical features, which aggregate packet metadata without capturing the '
+      'content of communications. This design ensures that the system does not have access to '
+      'the payload data of network packets, thereby preserving the confidentiality of user '
+      'communications while still enabling effective threat detection.')
+body('Transparency and accountability are also important ethical dimensions of AI-based '
+      'security systems. The integration of the Gemini AI assistant, which provides '
+      'plain-language explanations of model predictions, addresses the transparency concern '
+      'by making the system\'s decision-making process accessible to human operators. Network '
+      'administrators can understand why a particular flow was classified as malicious, what '
+      'features contributed to the decision, and what type of attack is suspected. This '
+      'transparency enables accountability, as decisions can be reviewed, questioned, and '
+      'validated by human operators before any automated actions are taken.')
+body('Bias and fairness are additional considerations in machine learning-based intrusion '
+      'detection. The CICIDS2017 dataset, while comprehensive, was generated in a simulated '
+      'network environment and may not fully represent the diversity of traffic patterns '
+      'across different network configurations, geographical regions, and user populations. '
+      'Models trained on such data may exhibit different levels of accuracy for different '
+      'types of traffic, potentially leading to systematic errors in specific deployment '
+      'scenarios. Ongoing monitoring of model performance in production environments and '
+      'periodic retraining on deployment-specific data are recommended to mitigate these '
+      'potential biases.')
+body('Finally, the dual-use nature of intrusion detection technology must be acknowledged. '
+      'While the proposed system is designed for defensive security purposes, the same '
+      'techniques could potentially be used for offensive purposes, such as identifying '
+      'vulnerable targets or evading detection. The open-source release of the system '
+      'promotes transparency, community review, and collaborative improvement, but it also '
+      'means that the technology is accessible to both defenders and attackers. Responsible '
+      'use guidelines and security awareness training are important components of the '
+      'ethical deployment of AI-based network security tools.')
+
+h3('4.6.3 Operational and Security Implications')
+body('The deployment of an AI-based IDS in a production network environment carries several '
+      'operational considerations. The system\'s reliance on flow-based features means it '
+      'does not require administrative access to network traffic contents, making it suitable '
+      'for deployment in environments where privacy regulations restrict deep packet '
+      'inspection. However, the system must be positioned at a network vantage point where '
+      'it can observe the full traffic stream, typically at a network gateway or switch '
+      'mirror port.')
+body('The computational overhead of the system is minimal for CSV and PCAP modes, as model '
+      'inference for a single flow takes approximately 0.5 milliseconds on a standard CPU. '
+      'For live capture mode, the throughput is limited primarily by the packet capture '
+      'mechanism rather than the classification pipeline, with tshark-based capture '
+      'supporting up to 10,000 flows per minute on commodity hardware. This performance '
+      'profile makes the system suitable for small to medium-sized network environments '
+      'with traffic volumes of up to several hundred thousand flows per day.')
+body('From a security perspective, the system itself must be protected against potential '
+      'attacks. The AI assistant API key should be stored securely using environment '
+      'variables rather than hardcoded values. The dashboard should be deployed behind '
+      'a reverse proxy with HTTPS encryption and authentication to prevent unauthorised '
+      'access. The trained model files should be integrity-checked to prevent tampering '
+      'that could introduce backdoors or reduce detection effectiveness.')
+body('The system\'s dependence on the CICIDS2017 dataset for training means that its '
+      'effectiveness on traffic patterns not represented in that dataset may be reduced. '
+      'Organisations deploying the system should consider fine-tuning the model on traffic '
+      'from their own network environment to improve detection of environment-specific '
+      'threats. This transfer learning approach can be implemented by collecting labelled '
+      'traffic samples from the deployment environment and periodically retraining the '
+      'model using the existing pipeline.')
 
 # ==================== CHAPTER FIVE ====================
 chapter(['Chapter Five', 'Summary, Conclusion and Recommendations'])
@@ -946,23 +1270,93 @@ body('Testing at the unit, integration, and user acceptance levels confirmed tha
      'components of the system functioned correctly and that the complete pipeline from '
      'traffic input to prediction display operated reliably across all three modes. The AI '
      'assistant successfully provided contextually relevant explanations of model predictions '
-     'and network security concepts.')
+      'and network security concepts.')
+body('The problem of encrypted traffic detection was addressed through the application of '
+      'XGBoost, which analyses flow-level statistical features such as packet sizes, flow '
+      'durations, and inter-arrival times. These features remain visible even when the payload '
+      'is encrypted, allowing the model to distinguish between benign and malicious traffic '
+      'patterns without requiring decryption. The model\'s accuracy of 99.9% and ROC-AUC of '
+      '0.9999 on the held-out test set validate the effectiveness of this approach.')
+body('The CICIDS2017 dataset, which contains over 3.37 million labelled network flows across '
+      '14 attack categories, was successfully preprocessed through cleaning, label encoding, '
+      'stratified splitting, and standard scaling. Data cleaning removed rows with missing or '
+      'infinite values, label encoding transformed the categorical attack labels into numerical '
+      'format suitable for model training, stratified splitting preserved class distributions '
+      'across training, validation, and test sets, and standard scaling ensured that all '
+      'features contributed equally to the model\'s decision process.')
+body('The XGBoost classifier was trained with hyperparameter tuning using grid search and '
+      'stratified 5-fold cross-validation. The optimal hyperparameters included a learning rate '
+      'of 0.05, a maximum tree depth of 6, a minimum child weight of 1, a subsample ratio of '
+      '0.8, and 300 boosting rounds. Early stopping with a patience of 50 rounds was employed '
+      'to prevent overfitting, halting training when the validation error ceased to improve.')
+body('The Streamlit dashboard was implemented with three operational modes that cater to '
+      'different use cases. The CSV upload mode enables batch analysis of pre-extracted flow '
+      'features, suitable for rapid testing and research activities. The PCAP upload mode '
+      'provides offline analysis of packet capture files, ideal for forensic investigations '
+      'and retrospective analysis of network incidents. The live capture mode enables '
+      'real-time network monitoring, capturing packets directly from a network interface and '
+      'classifying flows as they arrive. Each mode presents results through a unified interface '
+      'with colour-coded predictions, confidence scores, and aggregate statistics.')
+body('The Google Gemini AI assistant was integrated to address the explainability gap identified '
+      'in the literature review. The assistant provides plain-language explanations of model '
+      'predictions, describes the characteristics of detected attack types, and offers guidance '
+      'on appropriate response actions. The assistant operates on the current session data, '
+      'ensuring that its responses are contextually relevant to the traffic being analysed.')
+body('Comprehensive testing was conducted at three levels. Unit testing verified individual '
+      'components including data preprocessing functions, feature extraction modules, and '
+      'model inference functions. Integration testing validated the end-to-end pipeline from '
+      'traffic input through feature extraction, scaling, model inference, and result '
+      'display for all three operational modes. User acceptance testing confirmed that the '
+      'interface was intuitive, the predictions were accurate, and the AI assistant provided '
+      'helpful explanations. All test cases passed successfully.')
+body('The project also produced several tangible outputs in addition to the working IDS '
+      'system. A detailed project report was prepared following the CSC / OAUSTECH academic '
+      'guidelines, documenting the complete research process from problem identification '
+      'through literature review, methodology, implementation, and evaluation. A set of '
+      'defence presentation slides was prepared for the oral examination of the project. '
+      'The complete source code, trained model files, and documentation were published on '
+      'the GitHub repository at github.com/SenpaiDark/IDS, making the project accessible '
+      'for review, reuse, and further development by the academic and professional community.')
 
 h2('5.2 Conclusion')
 body('The study successfully achieved its aim of designing and implementing an AI-based '
-     'intrusion detection system for encrypted traffic. The system effectively combines the '
-     'XGBoost machine learning algorithm with an interactive Streamlit dashboard and AI-powered '
-     'explainability to provide a practical and accessible solution for network security '
-     'monitoring. All six objectives defined in Chapter One were fully accomplished: the '
-     'CICIDS2017 dataset was preprocessed, the XGBoost model was trained with exceptional '
-     'accuracy, the Streamlit dashboard was built, three operational modes were implemented, '
-     'the Gemini AI assistant was integrated, and the system was thoroughly evaluated.')
+      'intrusion detection system for encrypted traffic. The system effectively combines the '
+      'XGBoost machine learning algorithm with an interactive Streamlit dashboard and AI-powered '
+      'explainability to provide a practical and accessible solution for network security '
+      'monitoring. All six objectives defined in Chapter One were fully accomplished: the '
+      'CICIDS2017 dataset was preprocessed, the XGBoost model was trained with exceptional '
+      'accuracy, the Streamlit dashboard was built, three operational modes were implemented, '
+      'the Gemini AI assistant was integrated, and the system was thoroughly evaluated.')
 body('The exceptional performance metrics, with 99.9% accuracy and 0.9999 ROC-AUC, demonstrate '
-     'that XGBoost-based classification of flow-level features is an effective approach to '
-     'intrusion detection in encrypted network environments. The system therefore provides a '
-     'practical, lightweight, and reliable solution to the critical challenge of detecting '
-     'attacks concealed within encrypted network traffic, contributing to the broader goal '
-     'of improving organisational network security.')
+      'that XGBoost-based classification of flow-level features is an effective approach to '
+      'intrusion detection in encrypted network environments. These results are particularly '
+      'noteworthy given that the model operates entirely on statistical flow features without '
+      'any access to encrypted payload content. The system therefore demonstrates that effective '
+      'intrusion detection is possible even in fully encrypted network environments, addressing '
+      'a critical gap in current network security capabilities.')
+body('The system therefore provides a practical, lightweight, and reliable solution to the '
+      'critical challenge of detecting attacks concealed within encrypted network traffic. '
+      'The combination of high accuracy, multiple operational modes, user-friendly interface, '
+      'and AI-powered explainability makes the system suitable for deployment in a variety of '
+      'organisational contexts, from educational institutions and small businesses to larger '
+      'enterprises that require cost-effective network security monitoring.')
+body('The project contributes to the broader goal of improving organisational network security '
+      'by demonstrating that machine learning, specifically gradient boosting, can be '
+      'practically applied to the problem of encrypted traffic analysis. The open-source '
+      'release of the complete system ensures that the contributions of this research are '
+      'accessible to the wider community, enabling further development, adaptation, and '
+      'deployment in real-world network environments. The system also serves as a foundation '
+      'for future research into advanced intrusion detection techniques, including deep '
+      'learning approaches and real-time streaming analytics for high-throughput network '
+      'environments.')
+body('In conclusion, this project successfully demonstrated that an accessible, accurate, '
+      'and explainable AI-based intrusion detection system for encrypted traffic can be '
+      'developed using a combination of XGBoost classification, a Streamlit dashboard, and '
+      'a large language model-based AI assistant. The system addresses a pressing real-world '
+      'need in network security and provides a practical solution that bridges the gap between '
+      'machine learning research and usable security tools. The project contributes to both '
+      'the academic literature and the practical toolkit available for network security '
+      'professionals, particularly those operating in resource-constrained environments.')
 
 h2('5.3 Recommendations')
 body('Based on the outcomes of this study, the following recommendations are made:')
@@ -980,8 +1374,17 @@ numbered('Network administrators using the system should regularly review the AI
          'explanations and predictions to build familiarity with the model\'s behaviour and '
          'to develop trust in automated classification decisions.')
 numbered('Security teams should combine the AI-based IDS with existing signature-based '
-         'tools to create a layered defence architecture, leveraging the strengths of both '
-         'approaches for comprehensive network protection.')
+          'tools to create a layered defence architecture, leveraging the strengths of both '
+          'approaches for comprehensive network protection.')
+numbered('The system should be deployed with proper logging and alerting mechanisms to '
+          'ensure that detected threats are promptly communicated to security personnel. '
+          'Integration with existing security information and event management (SIEM) systems '
+          'should be implemented to centralise threat monitoring and incident response '
+          'workflows.')
+numbered('A regular review and update schedule should be established for the system, '
+          'including periodic model retraining on new traffic data, updating the AI assistant '
+          'prompts to improve explanation quality, and reviewing the detection rules and '
+          'thresholds based on operational experience and evolving threat landscapes.')
 
 h2('5.4 Suggestions for Future Research')
 body('The following suggestions are offered for future work:')

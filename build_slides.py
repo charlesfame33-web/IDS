@@ -485,7 +485,7 @@ ids = {
              'System for Encrypted Traffic',
     'student': 'Oyeduntan Segun Elijah',
     'matric': 'CSC/22/174',
-    'supervisor': "'Prof. A. J. Ikuomola'",
+    'supervisor': "'Dr. (Engr.) Modupe Agagu'",
     'slides': [
         {'kicker': 'Slide 2', 'title': 'Introduction',
          'items': [
@@ -570,14 +570,15 @@ ids = {
                r'c:\Users\ALEXIS\Desktop\SENPAI\shots\ids\02-pcap-tab.png'),
          ]},
         {'kicker': 'Slide 9', 'title': 'Results & Discussion',
-         'kind': 'screenshot',
+         'kind': 'bullets',
          'items': [
-              ('Figure 3: Confusion Matrix',
-               'Model achieves near-perfect classification on the test set.',
-               r'c:\Users\ALEXIS\Desktop\SENPAI\shots\ids\confusion_matrix.png'),
-              ('Figure 4: ROC Curve',
-               'ROC-AUC of 0.9999 demonstrates excellent discrimination.',
-               r'c:\Users\ALEXIS\Desktop\SENPAI\shots\ids\roc_curve.png'),
+              'Accuracy: 99.9% \u2014 999 out of 1000 flows correctly classified.',
+              'ROC-AUC: 0.9999 \u2014 near-perfect discrimination between benign and malicious.',
+              'Precision: 0.999 | Recall: 0.999 | F1-Score: 0.999.',
+              'Confusion matrix shows near-diagonal dominance (minimal FP/FN).',
+              'Feature importance: flow duration, backward packet length, inter-arrival times.',
+              'All three modes (CSV, PCAP, Live) passed unit, integration, and UAT testing.',
+              'AI assistant provides accurate plain-language explanations of predictions.',
          ]},
         {'kicker': 'Slide 10', 'title': 'Contributions to Knowledge',
          'items': [

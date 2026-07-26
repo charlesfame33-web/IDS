@@ -17,7 +17,7 @@ normal.font.size = Pt(12)
 normal.element.rPr.rFonts.set(qn('w:eastAsia'), 'Times New Roman')
 pf = normal.paragraph_format
 pf.line_spacing_rule = WD_LINE_SPACING.ONE_POINT_FIVE
-pf.space_after = Pt(6)
+pf.space_after = Pt(12)
 
 # Heading styles (so the auto Table of Contents can pick them up)
 for name, size in [('Heading 1', 14), ('Heading 2', 12), ('Heading 3', 12)]:
