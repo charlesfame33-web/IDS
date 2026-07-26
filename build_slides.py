@@ -477,5 +477,143 @@ agri = {
     ],
 }
 
+# ==================== IDS DECK ====================
+ids = {
+    **BW,
+    'badge': 'BSc Project Defence',
+    'title': 'Design and Implementation of an AI-Based Intrusion Detection '
+             'System for Encrypted Traffic',
+    'student': 'Oyeduntan Segun Elijah',
+    'matric': 'CSC/22/174',
+    'supervisor': "'Prof. A. J. Ikuomola'",
+    'slides': [
+        {'kicker': 'Slide 2', 'title': 'Introduction',
+         'items': [
+             'Network traffic is increasingly encrypted, creating a gap where '
+             'traditional signature-based intrusion detection systems cannot inspect payloads.',
+             'Machine learning models can detect malicious patterns in flow-based features '
+             'without decrypting traffic, preserving privacy while maintaining security.',
+             'XGBoost, a gradient-boosting ensemble, achieves state-of-the-art results on '
+             'tabular network data with high accuracy and low inference latency.',
+             'This project presents an AI-based IDS that combines an XGBoost model trained '
+             'on the CICIDS2017 dataset with an interactive Streamlit dashboard.',
+             'The system supports CSV upload, PCAP file analysis, and live network capture, '
+             'with an optional Gemini AI assistant for plain-English explanations.',
+         ]},
+        {'kicker': 'Slide 3', 'title': 'Motivation / Statement of the Problem',
+         'items': [
+             'Encrypted traffic now accounts for over 90% of internet traffic, making '
+             'deep-packet-inspection-based IDS largely ineffective.',
+             'Signature-based systems cannot detect novel or zero-day attacks, which '
+             'increasingly exploit encrypted channels.',
+             'Existing ML-based IDS solutions often lack user-friendly interfaces, making '
+             'them inaccessible to non-experts.',
+             'There is a need for a system that combines accurate ML detection, support '
+             'for multiple input modes, and an intuitive interface.',
+             'These challenges motivated the development of an accessible, AI-powered '
+             'IDS that works with encrypted traffic.',
+         ]},
+        {'kicker': 'Slide 4', 'title': 'Aim and Objectives of the Study',
+         'kind': 'two',
+         'left_title': 'Aim',
+         'left': ['To design and implement an AI-based intrusion detection system '
+                  'for encrypted traffic that integrates machine learning classification '
+                  'with an interactive dashboard and multiple input modes.'],
+         'right_title': 'Objectives',
+         'right': ['Preprocess the CICIDS2017 dataset for training',
+                   'Train and tune an XGBoost classifier on flow-based features',
+                   'Build a Streamlit dashboard with Matrix-themed UI',
+                   'Implement CSV upload, PCAP parsing, and live capture modes',
+                   'Integrate an AI assistant for attack explanation',
+                   'Evaluate model performance using standard metrics']},
+        {'kicker': 'Slide 5', 'title': 'Significance of the Study',
+         'items': [
+             'Technological Impact: Demonstrates the practical application of gradient '
+             'boosting for encrypted traffic analysis in a real-world tool.',
+             'Economic Impact: Reduces the cost of network security monitoring by providing '
+             'a free, open-source alternative to commercial IDS solutions.',
+             'Educational Impact: Serves as a learning platform for understanding ML-based '
+             'network security concepts and traffic analysis.',
+             'Social Impact: Makes advanced network security accessible to small organisations '
+             'and individuals who cannot afford expensive security infrastructure.',
+         ]},
+        {'kicker': 'Slide 6', 'title': 'Literature Review',
+         'items': [
+             'Buczak & Guven (2016) surveyed ML methods for cybersecurity, identifying '
+             'random forests and neural networks as effective for intrusion detection.',
+             'Chen & Guestrin (2016) introduced XGBoost, a scalable tree boosting system '
+             'that became a benchmark for tabular data classification.',
+             'Sharafaldin et al. (2018) created CICIDS2017, a realistic IDS dataset with '
+             '71 flow features and 14 attack types, enabling reproducible research.',
+             'Zhang et al. (2019) applied XGBoost to network intrusion detection, achieving '
+             'high accuracy on multiple benchmark datasets.',
+             'Gap: Few existing solutions combine high-accuracy ML with a modern interactive '
+             'dashboard and multi-mode input (CSV, PCAP, live capture).',
+         ]},
+        {'kicker': 'Slide 7', 'title': 'Methodology',
+         'kind': 'cards',
+         'cards': [
+             ('Approach', 'Agile SDLC with iterative development and continuous testing.'),
+             ('Architecture', 'Streamlit frontend + XGBoost backend + tshark for capture.'),
+             ('Dataset', 'CICIDS2017: 3.37M flows, 71 features, 14 attack types.'),
+             ('Model', 'XGBoost classifier: 99.9% accuracy, 0.9999 ROC-AUC.'),
+             ('Input Modes', 'CSV upload, PCAP parsing via tshark, live NIC capture.'),
+             ('AI Assistant', 'Google Gemini for plain-English attack explanations.')]},
+        {'kicker': 'Slide 8', 'title': 'Implementation',
+         'kind': 'screenshot',
+         'items': [
+              ('Figure 1: Full Dashboard',
+               'Matrix-themed IDS dashboard with hero section, feature cards, and attack tiles.',
+               r'c:\Users\ALEXIS\Desktop\SENPAI\shots\ids\01-full-dashboard.png'),
+              ('Figure 2: PCAP & Live Tabs',
+               'PCAP upload interface and live network capture configuration.',
+               r'c:\Users\ALEXIS\Desktop\SENPAI\shots\ids\02-pcap-tab.png'),
+         ]},
+        {'kicker': 'Slide 9', 'title': 'Results & Discussion',
+         'kind': 'screenshot',
+         'items': [
+              ('Figure 3: Confusion Matrix',
+               'Model achieves near-perfect classification on the test set.',
+               r'c:\Users\ALEXIS\Desktop\SENPAI\shots\ids\confusion_matrix.png'),
+              ('Figure 4: ROC Curve',
+               'ROC-AUC of 0.9999 demonstrates excellent discrimination.',
+               r'c:\Users\ALEXIS\Desktop\SENPAI\shots\ids\roc_curve.png'),
+         ]},
+        {'kicker': 'Slide 10', 'title': 'Contributions to Knowledge',
+         'items': [
+             'A fully functional AI-based IDS achieving 99.9% accuracy and 0.9999 ROC-AUC '
+             'on the CICIDS2017 benchmark dataset.',
+             'Integration of three detection modes (CSV, PCAP, live) within a single '
+             'unified dashboard accessible to non-experts.',
+             'A Matrix-themed interactive interface that combines real-time detection '
+             'with visual analytics and an AI-powered explanation system.',
+             'Demonstration of XGBoost effectiveness for encrypted traffic analysis, '
+             'with flow-based features requiring no decryption.',
+             'A practical, open-source tool that bridges the gap between ML research '
+             'and usable network security software.',
+         ]},
+        {'kicker': 'Slide 11', 'title': 'Conclusion / References',
+         'kind': 'two',
+         'left_title': 'Conclusion',
+         'left': ['All six objectives were achieved: the CICIDS2017 dataset was '
+                  'preprocessed, an XGBoost model was trained and tuned, a Streamlit '
+                  'dashboard was built with the Matrix theme, CSV/PCAP/live modes were '
+                  'implemented, a Gemini AI assistant was integrated, and the model '
+                  'was evaluated achieving 99.9% accuracy and 0.9999 ROC-AUC.',
+                  'The system provides a practical, accurate, and accessible solution '
+                  'for encrypted traffic intrusion detection.'],
+         'right_title': 'References',
+         'right': ['Buczak, A. L. & Guven, E. (2016). IEEE COMST, 18(2), 1153\u20131176.',
+                   'Chen, T. & Guestrin, C. (2016). KDD 2016, 785\u2013794.',
+                   'Pressman, R. S. & Maxim, B. R. (2020). Software engineering (9th ed.). '
+                   'McGraw-Hill.',
+                   'Sharafaldin, I. et al. (2018). ICISSp, 108\u2013116.',
+                   'Sommerville, I. (2016). Software engineering (10th ed.). Pearson.',
+                   'Stallings, W. (2017). Network security essentials (6th ed.). Pearson.',
+                   'Zhang, Y. et al. (2019). IEEE Access, 7, 164380\u2013164391.']},
+    ],
+}
+
 build_deck(mayor, r'c:\Users\ALEXIS\Desktop\SENPAI\mayor4code_Defence_Slides.pptx')
 build_deck(agri, r'c:\Users\ALEXIS\Desktop\SENPAI\AgriFlow_AI_Defence_Slides.pptx')
+build_deck(ids, r'c:\Users\ALEXIS\Desktop\SENPAI\ids_Defence_Slides.pptx')

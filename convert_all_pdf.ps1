@@ -1,7 +1,8 @@
 # Convert both reports to PDF via Word, updating TOC/fields first.
 $pairs = @(
   @{ src = "c:\Users\ALEXIS\Desktop\SENPAI\mayor4code_Project_Report.docx"; pdf = "c:\Users\ALEXIS\Desktop\SENPAI\mayor4code_Project_Report.pdf" },
-  @{ src = "c:\Users\ALEXIS\Desktop\SENPAI\AgriFlow_AI_Project_Report.docx"; pdf = "c:\Users\ALEXIS\Desktop\SENPAI\AgriFlow_AI_Project_Report.pdf" }
+  @{ src = "c:\Users\ALEXIS\Desktop\SENPAI\AgriFlow_AI_Project_Report.docx"; pdf = "c:\Users\ALEXIS\Desktop\SENPAI\AgriFlow_AI_Project_Report.pdf" },
+  @{ src = "c:\Users\ALEXIS\Desktop\SENPAI\ids_Project_Report.docx"; pdf = "c:\Users\ALEXIS\Desktop\SENPAI\ids_Project_Report.pdf" }
 )
 $word = New-Object -ComObject Word.Application
 $word.Visible = $false

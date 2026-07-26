@@ -1,44 +1,59 @@
-# AgriFlow AI
+# SENPAI Workspace
 
-An intelligent agricultural supply chain management platform built with Next.js, Supabase, and Google Gemini.
+Monorepo for B.Sc. Computer Science projects — Olusegun Agagu University of Science and Technology (OAUSTECH), Okitipupa.
 
-## Overview
+## Projects
 
-AgriFlow AI helps farmers, buyers, transporters, warehouse managers, and administrators manage the movement of farm produce with smart scheduling, demand forecasting, and inventory management.
+| Project | Description | Student | Matric |
+|---------|-------------|---------|--------|
+| **ids-project** | AI-Based Intrusion Detection System for Encrypted Traffic | Oyeduntan Segun Elijah | CSC/22/174 |
+| **agriflow** | AI-Driven Agricultural Supply Chain and Produce Scheduling System | Obayomi Samuel Oluwagbotemi | CSC/22/124 |
+| **testapp** | mayor4code E-Learning Platform | Giwa Mayowa Bopoola | CSC/22/204 |
+| **senpai-app** | SENPAI Main Application | — | — |
 
-## Features
+## Workspace Structure
 
-- Role-based authentication (5 user types)
-- Real-time inventory tracking
-- AI-powered demand forecasting
-- Smart delivery scheduling
-- Route optimization with maps
-- Analytics dashboards
-- Order management system
-
-## Tech Stack
-
-- **Frontend:** Next.js 14, TypeScript, Tailwind CSS, Recharts
-- **Backend:** Supabase (PostgreSQL), Authentication
-- **AI:** Google Gemini API
-- **Maps:** Leaflet + OpenStreetMap
-- **Hosting:** Vercel
-
-## Getting Started
-
-```bash
-npm install
-npm run dev
+```
+SENPAI/
+├── <project>/               # Project root
+├── shots/                   # All screenshots
+│   ├── <project>/           # Per-project screenshots
+├── _archive/                # Deprecated / old files
+├── <Project>_Report.docx    # Generated B.Sc. reports
+├── <Project>_Defence_Slides.pptx  # Generated defence slides
+├── build_<project>_report.py      # Report builder scripts
+├── build_slides.py               # Unified slides builder
+├── report_helpers.py             # Shared report formatting helpers
+├── convert_all_pdf.ps1           # PDF conversion script
+├── README.md                     # This file
+├── CLAUDE.md                     # AI/conventions rules
+├── CONTRIBUTING.md               # Contributor guidelines
 ```
 
-Create a `.env.local` with your Supabase and Gemini credentials (see `.env.example`).
+## Build Commands
 
-## Author
+```bash
+# Generate project report
+python build_<project>_report.py
 
-**Senpai Dark**
-- GitHub: [SenpaiDark](https://github.com/SenpaiDark)
-- LinkedIn: [daniel-atere-b00727381](https://linkedin.com/in/daniel-atere-b00727381)
+# Generate defence slides
+python build_slides.py
+
+# Convert all .docx to PDF
+powershell -File convert_all_pdf.ps1
+```
+
+## Standards
+
+All reports follow CSC / OAUSTECH B.Sc. guidelines:
+- Times New Roman 12pt, A4, 1.5 line spacing
+- Preliminary pages: Roman numerals (title page unnumbered)
+- Main body: Arabic numerals starting at 1
+- Chapters: Introduction, Literature Review, Methodology, Implementation & Results, Summary & Conclusion
+- References: APA style with hanging indent
+
+All slides follow the standard 12-slide black-and-white defence format.
 
 ## License
 
-MIT
+Academic — for educational and research purposes.
