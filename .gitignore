@@ -9,6 +9,7 @@ build/
 # Data
 data/raw/
 data/processed/
+data/sample_test.csv
 capture_temp.pcap
 
 # Models
