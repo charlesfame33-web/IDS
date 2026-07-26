@@ -1242,7 +1242,128 @@ body('The system\'s dependence on the CICIDS2017 dataset for training means that
       'from their own network environment to improve detection of environment-specific '
       'threats. This transfer learning approach can be implemented by collecting labelled '
       'traffic samples from the deployment environment and periodically retraining the '
-      'model using the existing pipeline.')
+       'model using the existing pipeline.')
+
+h3('4.6.4 Cost-Benefit Analysis of the Proposed System')
+body('An important consideration for any security solution is the cost-benefit trade-off '
+      'associated with its deployment. The proposed system offers significant cost advantages '
+      'compared to commercial IDS and next-generation firewall solutions. The system is built '
+      'entirely on open-source software, including Python, Streamlit, XGBoost, scikit-learn, '
+      'and Scapy. There are no licensing fees, subscription costs, or per-seat charges '
+      'associated with its use. The only potential recurring cost is the Google Gemini API '
+      'usage for the AI assistant, which operates on a pay-as-you-go basis with a generous '
+      'free tier that is sufficient for typical usage patterns.')
+body('The hardware requirements for deploying the system are minimal. The application can run '
+      'on a standard desktop computer or a low-cost cloud virtual machine with 4 GB of RAM '
+      'and a dual-core processor. The total infrastructure cost for a self-hosted deployment '
+      'can be as low as five to ten dollars per month on cloud platforms such as AWS EC2, '
+      'Google Cloud Compute Engine, or DigitalOcean Droplets. In contrast, commercial IDS '
+      'solutions from vendors such as Palo Alto Networks or Cisco typically require hardware '
+      'appliances costing thousands of dollars plus annual maintenance fees.')
+body('The training cost for the XGBoost model is also minimal. The full training process, '
+      'including hyperparameter tuning with 5-fold cross-validation, completes in under 30 '
+      'minutes on a standard laptop without a GPU. The inference cost is negligible, with '
+      'each classification taking less than one millisecond. This efficiency profile makes '
+      'the system suitable for organisations with limited security budgets, including '
+      'educational institutions, small businesses, and non-profit organisations that may not '
+      'be able to justify the expense of commercial security infrastructure.')
+
+h3('4.6.5 Deployment Recommendations for Different Organisational Contexts')
+body('The deployment configuration of the proposed IDS should be tailored to the specific '
+      'needs and constraints of the target organisation. For educational institutions such '
+      'as universities and research centres, the system can be deployed on existing campus '
+      'network infrastructure without additional hardware investment. The CSV mode is '
+      'particularly useful for research purposes, enabling batch analysis of traffic captures '
+      'for academic investigations. The live capture mode can be used to provide real-time '
+      'monitoring of sensitive network segments such as administrative offices and research '
+      'laboratories.')
+body('For small and medium-sized enterprises (SMEs), the recommended deployment configuration '
+      'involves running the Streamlit dashboard on a dedicated server within the internal '
+      'network. The system should be positioned to monitor traffic at the network gateway, '
+      'providing visibility into all inbound and outbound communications. The Docker '
+      'deployment option simplifies setup and ensures consistent behaviour across different '
+      'environments. The AI assistant can be configured with a Gemini API key to provide '
+      'explainability for non-technical staff who may not have deep expertise in network '
+      'security.')
+body('For larger enterprises, the system can be deployed as part of a layered security '
+      'architecture alongside existing firewalls, signature-based IDS, and security '
+      'information and event management (SIEM) platforms. The system\'s output can be '
+      'integrated into existing security workflows through log aggregation and alerting '
+      'mechanisms. In such environments, the live capture mode provides the most value, '
+      'offering continuous monitoring of network traffic and immediate detection of threats '
+      'that may bypass other security layers. The modular architecture of the system enables '
+      'easy integration with existing security infrastructure through well-defined APIs and '
+       'data export formats.')
+
+h3('4.6.6 Challenges Encountered During Development')
+body('Several challenges were encountered during the development of the AI-based IDS, '
+      'each of which required careful problem-solving and adaptation of the original '
+      'development plan. Understanding these challenges and their resolutions provides '
+      'valuable context for evaluating the final system and for future researchers seeking '
+      'to build upon this work.')
+body('The first major challenge was data preprocessing and quality assurance. The CICIDS2017 '
+      'dataset, while comprehensive, contains inconsistencies across the individual CSV files '
+      'that make up the full dataset. Column naming conventions vary slightly between files, '
+      'with some columns using different capitalisation or spacing. Some files contain '
+      'additional columns not present in others, requiring careful column alignment during '
+      'concatenation. Missing values and infinite values were also present, necessitating '
+      'robust cleaning procedures. These issues were addressed by implementing standardised '
+      'column name normalisation, automated detection and removal of columns with high '
+      'missing-value rates, and median-based imputation for remaining missing values.')
+body('A second significant challenge was the class imbalance problem inherent in the '
+      'CICIDS2017 dataset, where benign traffic constitutes over 73% of the total samples '
+      'while some attack categories represent less than 1% of the data. This imbalance can '
+      'cause the model to become biased toward the majority class, resulting in poor '
+      'detection of minority attack types. This challenge was addressed through the use of '
+      'stratified sampling during train-test splitting, which preserved the class distribution '
+      'across all splits, and the XGBoost algorithm\'s built-in handling of class weights, '
+      'which penalises misclassification of minority classes more heavily than majority '
+      'classes during training.')
+body('A third challenge was the feature extraction from PCAP files for the PCAP upload mode. '
+      'The tshark-based extraction process must parse raw packet capture files and compute '
+      'the same 71 flow-based features that were used during model training. Ensuring that '
+      'the extracted features exactly match the format and scaling of the training data '
+      'required careful attention to feature ordering, naming, and preprocessing. This was '
+      'addressed by saving the feature column order during training alongside the model files '
+      'and using the same StandardScaler transformation pipeline for all input modes.')
+body('A fourth challenge was the live capture mode implementation using Scapy. Capturing '
+      'network packets in real time, buffering them into flows based on the traditional '
+      '5-tuple (source IP, destination IP, source port, destination port, protocol), '
+      'extracting features from partial flows, and classifying them while maintaining '
+      'acceptable throughput required careful optimisation. The final implementation uses '
+      'a sliding window approach where packets are continuously accumulated and features '
+      'are extracted from completed flows, with incomplete flows being held in a buffer '
+      'until they either reach a timeout threshold or accumulate sufficient packets for '
+      'meaningful analysis.')
+body('A fifth challenge was the integration of the Google Gemini AI assistant in a way that '
+      'provided useful, context-aware explanations without hallucinating or providing '
+      'inaccurate security information. The system prompt was carefully designed to constrain '
+      'the assistant to provide explanations based on the available traffic data and to '
+      'avoid making specific claims about the network environment that could not be verified '
+      'from the flow data. The assistant was configured to operate only on the current '
+      'session data, ensuring that its responses were contextually relevant and grounded '
+      'in the actual classification results.')
+
+h3('4.6.7 Summary of Chapter Four')
+body('This chapter presented the complete implementation of the AI-based intrusion detection '
+      'system, including the development environment, system interfaces, testing procedures, '
+      'and model evaluation results. The system was implemented using Python and Streamlit, '
+      'with a dark matrix-themed interface and three operational modes. Comprehensive testing '
+      'at the unit, integration, and user acceptance levels confirmed the reliability and '
+      'correctness of the system across all operational modes.')
+body('The XGBoost model evaluation demonstrated exceptional performance, achieving 99.9% '
+      'accuracy, 0.999 precision, 0.999 recall, 0.999 F1-score, and 0.9999 ROC-AUC on the '
+      'held-out test set. Per-attack category analysis showed strong detection performance '
+      'across all attack types, with DDoS and port scan attacks achieving near-perfect '
+      'classification rates and web attacks representing the most challenging category with '
+      '97.8% precision and 96.5% recall.')
+body('Comparative analysis with existing systems revealed that the proposed IDS offers '
+      'unique advantages in terms of encrypted traffic detection capability, usability, '
+      'operational flexibility, and cost-effectiveness. The system addresses all six '
+      'objectives defined in Chapter One and fills the research gaps identified in the '
+      'literature review. The ethical considerations, operational implications, and '
+      'challenges encountered during development were discussed, providing a comprehensive '
+      'picture of the system\'s capabilities and limitations.')
 
 # ==================== CHAPTER FIVE ====================
 chapter(['Chapter Five', 'Summary, Conclusion and Recommendations'])
