@@ -74,3 +74,7 @@ ids-project/
 
 ## License
 MIT – for educational use.
+
+## Contributors
+- **Segun Oyeduntan** – Owner
+- **Senpai Dark** – Developer
