@@ -12,7 +12,7 @@ import random
 from collections import defaultdict
 import google.generativeai as genai
 
-st.set_page_config(page_title="AI Intrusion Detection System", page_icon="🛡️", layout="wide", initial_sidebar_state="collapsed")
+st.set_page_config(page_title="AI Intrusion Detection System", page_icon="🛡️", layout="wide")
 
 random.seed(42)
 cols_parts = []
@@ -52,7 +52,9 @@ st.markdown(f"""
         line-height: 1.2; display: block;
     }}
     footer {{visibility: hidden;}}
-    header {{visibility: hidden;}}
+    #MainMenu {{visibility: hidden;}}
+    .stAppToolbar {{visibility: hidden;}}
+    [data-testid="stHeader"] {{ background: transparent !important; border: none !important; }}
     .stApp {{ background: transparent !important; }}
     .main > div {{
         background: rgba(10, 15, 10, 0.82) !important;
@@ -99,12 +101,65 @@ st.markdown(f"""
         backdrop-filter: blur(5px); border-radius: 16px; padding: 1rem;
     }}
     .stSelectbox label, .stSlider label, .stFileUploader label {{ color: #80a080 !important; }}
+    /* Sections */
+    .section-title {{
+        text-align: center; font-size: 1.8rem;
+        color: #00ff41 !important; margin: 2rem 0 1.5rem;
+        letter-spacing: 2px;
+    }}
+    .feature-card {{
+        background: rgba(0, 20, 0, 0.5);
+        border: 1px solid rgba(0, 255, 65, 0.12);
+        border-radius: 16px; padding: 24px;
+        text-align: center; height: 100%;
+        backdrop-filter: blur(4px);
+        transition: all 0.3s;
+    }}
+    .feature-card:hover {{
+        border-color: rgba(0, 255, 65, 0.3);
+        box-shadow: 0 0 25px rgba(0, 255, 65, 0.08);
+        transform: translateY(-2px);
+    }}
+    .feature-icon {{
+        width: 48px; height: 48px; line-height: 48px;
+        background: rgba(0, 255, 65, 0.08);
+        border: 1px solid rgba(0, 255, 65, 0.2);
+        border-radius: 50%;
+        font-size: 1.3rem; margin: 0 auto 12px;
+    }}
+    .feature-title {{
+        font-size: 1.05rem; font-weight: 700;
+        color: #c0d8c0 !important; margin-bottom: 8px;
+    }}
+    .feature-desc {{
+        font-size: 0.85rem; color: #709070 !important;
+        line-height: 1.5;
+    }}
+    .attack-card {{
+        border-radius: 16px; padding: 20px 12px;
+        text-align: center; min-height: 130px;
+        display: flex; flex-direction: column; align-items: center;
+        justify-content: center;
+        border: 1px solid rgba(0, 255, 65, 0.15);
+        transition: all 0.3s;
+    }}
+    .attack-card:hover {{
+        transform: translateY(-3px);
+        box-shadow: 0 0 30px rgba(0, 255, 65, 0.15);
+        border-color: rgba(0, 255, 65, 0.4);
+    }}
+    .attack-icon {{ font-size: 1.6rem; margin-bottom: 8px; }}
+    .attack-name {{ font-size: 1rem; font-weight: 700; color: #c0d8c0; margin-bottom: 4px; }}
+    .attack-desc {{ font-size: 0.8rem; color: #709070; }}
 </style>
 <div class="mbg">{matrix_cols}</div>
 """, unsafe_allow_html=True)
 
 if "api_key" not in st.session_state:
     st.session_state.api_key = ""
+
+if "messages" not in st.session_state:
+    st.session_state.messages = []
 
 @st.cache_resource
 def load_artifacts():
@@ -114,14 +169,6 @@ def load_artifacts():
     return model, scaler, X_ref.columns.tolist()
 
 model, scaler, feature_cols = load_artifacts()
-
-with st.sidebar:
-    st.markdown("### 🤖 AI Explainer")
-    st.caption("Get a free Gemini key at aistudio.google.com")
-    api_key_input = st.text_input("Enter Gemini API Key", type="password", value=st.session_state.api_key)
-    if api_key_input:
-        st.session_state.api_key = api_key_input
-        genai.configure(api_key=api_key_input)
 
 def get_tshark_path():
     common_paths = ["C:\\Program Files\\Wireshark\\tshark.exe", "C:\\Program Files (x86)\\Wireshark\\tshark.exe"]
@@ -267,15 +314,23 @@ def predict(df):
     probs = model.predict_proba(X)[:, 1]
     return preds, probs
 
-def get_ai_explanation(flow_data, prediction, confidence):
+def ask_ai_assistant(user_message):
     if not st.session_state.get('api_key'):
-        return "Enter your Gemini API key in the sidebar."
+        return "Enter your Gemini API key in the AI Assistant section above."
     try:
         genai.configure(api_key=st.session_state.api_key)
         model_ai = genai.GenerativeModel("gemini-1.5-flash")
-        top_features = {k: v for i, (k, v) in enumerate(flow_data.items()) if i < 10}
-        prompt = f"You are an AI cybersecurity expert. A network flow was classified as {prediction} with {confidence*100:.1f}% confidence. Flow stats (first 10 features): {top_features}. Explain in 2-3 sentences, in plain English, why this flow is {prediction}. Be concise."
-        response = model_ai.generate_content(prompt)
+        system_prompt = (
+            "You are an AI cybersecurity assistant integrated into an Intrusion Detection System (IDS) dashboard. "
+            "You can explain: how the IDS works (XGBoost model trained on CICIDS2017, 99.9% accuracy), "
+            "network attack types (DDoS, Brute Force, Botnet, Web Attacks, Infiltration), "
+            "how to interpret detection results, PCAP and traffic analysis concepts, "
+            "live capture and monitoring techniques, and any cybersecurity topic related to intrusion detection. "
+            "Keep responses concise (2-4 sentences) and technically accurate. "
+            "If asked something outside cybersecurity, politely redirect to security topics."
+        )
+        chat = model_ai.start_chat(history=[{"role": "user", "parts": [system_prompt]}, {"role": "model", "parts": ["Understood. I am the IDS cybersecurity assistant."]}])
+        response = chat.send_message(user_message)
         return response.text
     except Exception as e:
         return f"AI Error: {str(e)}"
@@ -284,6 +339,78 @@ st.markdown('<div style="text-align: center; margin-top: 1rem;"><span class="her
 st.markdown('<h1 class="hero-title" style="text-align: center; font-size: 4rem;">Intrusion Detection System</h1>', unsafe_allow_html=True)
 st.markdown('<p style="text-align: center; color: #8899bb; font-size: 1.2rem;">XGBoost &middot; 99.9% Accuracy &middot; Live Capture &middot; AI Explanations</p>', unsafe_allow_html=True)
 st.markdown("---")
+
+st.markdown('<h2 class="section-title">Key Features</h2>', unsafe_allow_html=True)
+cols = st.columns(4)
+features = [
+    ("🔬", "CSV Analysis", "Upload flow-feature CSV files for instant batch classification with 99.9% accuracy."),
+    ("📦", "PCAP Parsing", "Drop Wireshark capture files for automated flow extraction and attack detection."),
+    ("📡", "Live Capture", "Monitor network interfaces in real-time and detect threats as they happen."),
+    ("🧠", "AI Explanations", "Get plain-English explanations of detected attacks powered by Gemini AI."),
+]
+for col, (icon, title, desc) in zip(cols, features):
+    with col:
+        st.markdown(f'''
+        <div class="feature-card">
+            <div class="feature-icon">{icon}</div>
+            <div class="feature-title">{title}</div>
+            <div class="feature-desc">{desc}</div>
+        </div>
+        ''', unsafe_allow_html=True)
+
+st.markdown('<h2 class="section-title">Detectable Attack Types</h2>', unsafe_allow_html=True)
+cols5 = st.columns(5)
+attacks = [
+    ("💥", "DDoS", "Distributed Denial of Service"),
+    ("🔑", "Brute Force", "FTP / SSH / HTTP auth"),
+    ("🤖", "Botnet", "C&C / ARES / malware"),
+    ("🔪", "Web Attacks", "SQLi / XSS / path traversal"),
+    ("🕳️", "Infiltration", "Internal port scan / exploits"),
+]
+attack_colors = ["rgba(0,255,65,0.08)", "rgba(0,200,50,0.12)", "rgba(0,180,60,0.15)", "rgba(0,220,80,0.10)", "rgba(0,190,70,0.18)"]
+for col, (icon, name, desc), bg in zip(cols5, attacks, attack_colors):
+    with col:
+        st.markdown(f'''
+        <div class="attack-card" style="background: {bg};">
+            <div class="attack-icon">{icon}</div>
+            <div class="attack-name">{name}</div>
+            <div class="attack-desc">{desc}</div>
+        </div>
+        ''', unsafe_allow_html=True)
+
+st.markdown("---")
+
+st.markdown("### 🤖 AI Assistant")
+st.caption("Ask anything about the IDS system, network security, or attack types.")
+
+with st.expander("⚙️ Configure Gemini API Key", expanded=not st.session_state.api_key):
+    st.caption("Get a free key at aistudio.google.com")
+    api_key_input = st.text_input("API Key", type="password", value=st.session_state.api_key, label_visibility="collapsed")
+    if api_key_input:
+        st.session_state.api_key = api_key_input
+        genai.configure(api_key=api_key_input)
+
+for msg in st.session_state.messages:
+    with st.chat_message(msg["role"]):
+        st.markdown(msg["content"])
+
+col_q, col_btn = st.columns([5, 1])
+with col_q:
+    user_query = st.text_input("Ask the AI assistant", placeholder="Ask about the IDS system...", label_visibility="collapsed")
+with col_btn:
+    st.write("")
+    send = st.button("Enter", type="primary", use_container_width=True)
+
+if send and user_query:
+    st.session_state.messages.append({"role": "user", "content": user_query})
+    with st.chat_message("user"):
+        st.markdown(user_query)
+    with st.chat_message("assistant"):
+        with st.spinner("Analyzing..."):
+            response = ask_ai_assistant(user_query)
+        st.markdown(response)
+    st.session_state.messages.append({"role": "assistant", "content": response})
+    st.rerun()
 
 tab1, tab2, tab3 = st.tabs(["CSV Upload", "PCAP Upload", "Live Capture"])
 
@@ -314,8 +441,12 @@ with tab1:
                 selected_idx = st.selectbox("Select an ATTACK flow to explain", attack_rows.index, format_func=lambda i: f"Flow {i} (Conf: {attack_rows.loc[i, 'Confidence']:.2f})")
                 if st.button("Explain This Attack"):
                     flow_data = attack_rows.loc[selected_idx]
-                    explanation = get_ai_explanation(flow_data[feature_cols], "ATTACK", flow_data["Confidence"])
-                    st.info(f"**Analysis:** {explanation}")
+                    top_feats = {k: v for k, v in flow_data[feature_cols].items() if list(feature_cols).index(k) < 10}
+                    q = f"This flow was classified as ATTACK with {flow_data['Confidence']*100:.1f}% confidence. Key features: {top_feats}. Why is this an attack?"
+                    st.session_state.messages.append({"role": "user", "content": q})
+                    reply = ask_ai_assistant(q)
+                    st.session_state.messages.append({"role": "assistant", "content": reply})
+                    st.success("Answer added in the AI Assistant below.")
             else:
                 st.success("No attacks found.")
             st.download_button("Download CSV", df.to_csv(index=False), "results.csv")
@@ -351,8 +482,12 @@ with tab2:
                         selected_idx = st.selectbox("Select an ATTACK flow to explain", attack_rows.index, format_func=lambda i: f"Flow {i} (Conf: {attack_rows.loc[i, 'Confidence']:.2f})")
                         if st.button("Explain This Attack"):
                             flow_data = attack_rows.loc[selected_idx]
-                            explanation = get_ai_explanation(flow_data[feature_cols], "ATTACK", flow_data["Confidence"])
-                            st.info(f"**Analysis:** {explanation}")
+                            top_feats = {k: v for k, v in flow_data[feature_cols].items() if list(feature_cols).index(k) < 10}
+                            q = f"This flow was classified as ATTACK with {flow_data['Confidence']*100:.1f}% confidence. Key features: {top_feats}. Why is this an attack?"
+                            st.session_state.messages.append({"role": "user", "content": q})
+                            reply = ask_ai_assistant(q)
+                            st.session_state.messages.append({"role": "assistant", "content": reply})
+                            st.success("Answer added in the AI Assistant below.")
                     else:
                         st.success("No attacks found.")
                     st.download_button("Download", df.to_csv(index=False), "pcap_results.csv")
@@ -432,8 +567,12 @@ with tab3:
                                 selected_idx = st.selectbox("Select an ATTACK flow to explain", attack_rows.index, format_func=lambda i: f"Flow {i} (Conf: {attack_rows.loc[i, 'Confidence']:.2f})")
                                 if st.button("Explain This Attack"):
                                     flow_data = attack_rows.loc[selected_idx]
-                                    explanation = get_ai_explanation(flow_data[feature_cols], "ATTACK", flow_data["Confidence"])
-                                    st.info(f"**Analysis:** {explanation}")
+                                    top_feats = {k: v for k, v in flow_data[feature_cols].items() if list(feature_cols).index(k) < 10}
+                                    q = f"This flow was classified as ATTACK with {flow_data['Confidence']*100:.1f}% confidence. Key features: {top_feats}. Why is this an attack?"
+                                    st.session_state.messages.append({"role": "user", "content": q})
+                                    reply = ask_ai_assistant(q)
+                                    st.session_state.messages.append({"role": "assistant", "content": reply})
+                                    st.success("Answer added in the AI Assistant below.")
                             else:
                                 st.success("No attacks found.")
                             st.download_button("Download CSV", df.to_csv(index=False), "live.csv")
