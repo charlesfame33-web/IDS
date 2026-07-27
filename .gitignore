@@ -28,3 +28,9 @@ venv/
 # OS
 .DS_Store
 Thumbs.db
+
+# Always track model / trained artifacts
+!models/
+!models/**
+!*.pkl
+!*.joblib
