@@ -123,38 +123,6 @@ def build_deck(cfg, out_path):
                      Inches(0.5), [(ct, 17, WHITE, True)])
                 text(s, l + Inches(0.25), t + Inches(0.75), cw - Inches(0.5),
                      ch - Inches(0.9), [(cb, 13, MUTED, False)])
-        elif kind == 'implementation':
-            items = sl['items']
-            ft = Inches(1.95)
-            fw = Inches(11.9)
-            fh = Inches(3.2)
-            box(s, Inches(0.75), ft, fw, fh, PANEL, border=BORDER)
-            text(s, Inches(1.05), ft + Inches(0.15), fw - Inches(0.6),
-                 Inches(0.35), [(items[0][0], 15, ACCENT, True)])
-            if items[0][2] and os.path.exists(items[0][2]):
-                try:
-                    s.shapes.add_picture(items[0][2], Inches(1.1), ft + Inches(0.55),
-                                         Inches(11.2))
-                except Exception:
-                    pass
-            st = ft + fh + Inches(0.25)
-            for idx in range(1, len(items)):
-                fig_label, fig_desc, img_path = items[idx]
-                l = Inches(0.75) + (idx - 1) * Inches(6.05)
-                cw = Inches(5.75)
-                ch = Inches(1.8)
-                box(s, l, st, cw, ch, PANEL, border=BORDER)
-                text(s, l + Inches(0.25), st + Inches(0.12), cw - Inches(0.5),
-                     Inches(0.3), [(fig_label, 13, ACCENT, True)])
-                if img_path and os.path.exists(img_path):
-                    try:
-                        s.shapes.add_picture(img_path, l + Inches(0.3), st + Inches(0.5),
-                                             cw - Inches(0.6))
-                    except Exception:
-                        pass
-                text(s, l + Inches(0.25), st + ch - Inches(0.35),
-                     cw - Inches(0.5), Inches(0.3),
-                     [(fig_desc, 11, MUTED, False)], align=PP_ALIGN.CENTER)
         elif kind == 'screenshot':
             items = sl['items']
             for idx, item in enumerate(items):
@@ -221,123 +189,137 @@ mayor = {
     'supervisor': "'Dr. Adeolu Obamehinti'",
     'slides': [
         # --- Slide 2: Introduction ---
-        {'kicker': 'Slide 2', 'title': 'Introduction',
+        {'kicker': 'Slide 2', 'title': 'Introduction to the mayor4code E-Learning Platform',
          'items': [
-             'Self-paced, learner-centred education (Garrison, 2017).',
-             'Interactive platforms improve engagement through instant feedback (Pressman & Maxim, 2020).',
-             'Python is widely used, but beginners struggle with traditional methods.',
-             'mayor4code: integrated platform for structured Python learning.',
+             'E-learning has transformed education by enabling self-paced, learner-centred '
+             'instruction beyond the physical classroom (Garrison, 2017).',
+             'Learning to program is widely regarded as difficult for beginners due to '
+             'the separation of theory and practice in traditional methods.',
+             'Interactive browser-based platforms provide immediate feedback, which '
+             'significantly improves engagement and outcomes (Pressman & Maxim, 2020).',
+             'mayor4code is a web-based interactive e-learning platform for structured '
+             'Python programming that integrates lesson delivery, practical coding, '
+             'and automated assessment within a single system.',
+             'The platform delivers twelve sequential lessons, quizzes, an in-browser '
+             'code playground, certificates, and a gamified leaderboard.',
          ]},
         # --- Slide 3: Motivation / Problem Statement ---
-        {'kicker': 'Slide 3', 'title': 'Motivation & Problem Statement',
+        {'kicker': 'Slide 3', 'title': 'Motivation and Problem Statement: Challenges in Programming Education',
          'items': [
-             'Unstructured content confuses learners on what to study next.',
-             'Theory and practice separated; local setup is discouraging.',
-             'Few resources provide instant feedback or enforce mastery.',
-             'No progress tracking, certification, or motivation features.',
+             'Many free programming resources present content in an unstructured manner, '
+             'leaving learners uncertain about the order in which topics should be studied.',
+             'Theory and practice are often separated; configuring a local programming '
+             'environment can be difficult and discouraging for beginners.',
+             'The absence of instant, automated feedback limits learners\u2019 ability to '
+             'identify and correct mistakes promptly.',
+             'Few resources enforce mastery before advancement or provide progress tracking, '
+             'certification, or motivational features.',
+             'These challenges motivated the development of mayor4code as an integrated, '
+             'structured, and interactive solution for Python beginners.',
          ]},
         # --- Slide 4: Aim & Objectives ---
-        {'kicker': 'Slide 4', 'title': 'Aim and Objectives',
+        {'kicker': 'Slide 4', 'title': 'Aim and Objectives of the Study',
          'kind': 'two',
          'left_title': 'Aim',
-         'left': ['Design & implement a web-based e-learning platform integrating '
-                  'lessons, coding, and assessment in one system.'],
+         'left': ['To design and implement a web-based interactive e-learning platform for '
+                  'structured Python programming that integrates lesson delivery, practical '
+                  'coding, and automated assessment within a single system.'],
          'right_title': 'Objectives',
-         'right': ['Structured lessons with locked progression',
-                   'Secure user authentication',
-                   'In-browser Python playground',
-                   'Automated quiz scoring',
-                   'Progress tracking, certification, leaderboard',
-                   'Evaluate through testing']},
+         'right': ['Design a platform with structured lessons and locked progression',
+                   'Implement secure user authentication and authorisation',
+                   'Develop an interactive in-browser Python playground',
+                   'Create automated quizzes with instant scoring',
+                   'Add progress tracking, certification, and a leaderboard',
+                   'Evaluate functionality and usability through testing']},
         # --- Slide 5: Significance ---
-        {'kicker': 'Slide 5', 'title': 'Significance of the Study',
+        {'kicker': 'Slide 5', 'title': 'Significance of the Study: Educational, Technological, and Economic Impact',
          'items': [
-             'Educational: structured, self-paced learning with instant feedback.',
-             'Technological: modern web stack + secure code execution.',
-             'Economic: free platform, no per-learner cost.',
-             'Social: accessible to anyone with internet.',
+             'Educational Impact: Promotes structured, self-paced learning with mastery-based '
+             'progression and instant feedback, improving comprehension and skill acquisition.',
+             'Technological Impact: Demonstrates the practical application of modern web '
+             'technologies and secure code-execution in solving educational challenges.',
+             'Economic Impact: Reduces the cost of programming instruction by providing a '
+             'free, web-based platform that serves many learners simultaneously.',
+             'Social Impact: Makes quality programming education accessible to anyone '
+             'with an internet connection, regardless of location or financial means.',
          ]},
         # --- Slide 6: Literature Review ---
-        {'kicker': 'Slide 6', 'title': 'Literature Review',
+        {'kicker': 'Slide 6', 'title': 'Literature Review: E-Learning, Gamification, and Related Platforms',
          'items': [
-             'E-learning as effective as traditional instruction (Anderson, 2008).',
-             'Constructivism supports interactive, scaffolded learning (Piaget, 1952; Vygotsky, 1978).',
-             'Mastery learning validates locked progression (Bloom, 1968; Guskey, 2007).',
-             'Gamification boosts engagement (Deterding et al., 2011; Hamari et al., 2014).',
-             'Gap: no free platform integrates all features in one system.',
+             'E-learning systems support self-paced, learner-centred education and can be '
+             'as effective as traditional instruction (Anderson, 2008; Garrison, 2017).',
+             'Constructivist theory (Piaget, 1952; Vygotsky, 1978) supports interactive, '
+             'scaffolded learning environments like mayor4code.',
+             'Mastery learning (Bloom, 1968; Guskey, 2007) validates the locked-progression '
+             'model that enforces prerequisite understanding.',
+             'Gamification through certificates and leaderboards boosts learner engagement '
+             'and motivation (Deterding et al., 2011; Hamari et al., 2014).',
+             'Gap: Few free platforms integrate structured lessons, a code playground, '
+             'automated assessment, certification, and gamification in one system.',
          ]},
         # --- Slide 7: Methodology ---
-        {'kicker': 'Slide 7', 'title': 'Methodology',
+        {'kicker': 'Slide 7', 'title': 'Methodology: Agile Approach, Three-Tier Architecture, and System Flowchart',
          'kind': 'cards',
          'cards': [
-             ('Approach', 'Agile SDLC with iterative testing.'),
-             ('Architecture', 'Three-tier: Presentation, Django, Database.'),
-             ('Stack', 'Django, Python, HTML/CSS/JS; SQLite/PostgreSQL.'),
-             ('Progression', 'Lessons unlock at \u226560% quiz score.'),
-             ('Playground', 'Isolated subprocess with 5s timeout.'),
-             ('Testing', 'Unit, functional, and usability testing.')]},
-        # --- Slide 8: Implementation ---
-        {'kicker': 'Slide 8', 'title': 'Implementation',
-         'kind': 'implementation',
-         'items': [
-             ('System Flowchart',
-              'User journey: register \u2192 learn \u2192 quiz \u2192 unlock \u2192 certificate.',
-              r'c:\Users\ALEXIS\Desktop\SENPAI\shots\mayor4code\flowchart.png'),
-             ('Lesson Interface',
-              'Structured Python lessons with navigation.',
-              r'c:\Users\ALEXIS\Desktop\SENPAI\shots\mayor4code\06-lessons.png'),
-             ('Code Playground',
-              'In-browser editor with safe execution.',
-              r'c:\Users\ALEXIS\Desktop\SENPAI\shots\mayor4code\07-playground.png'),
-         ]},
-        # --- Slide 9: Results & Discussion ---
-        {'kicker': 'Slide 9', 'title': 'Results & Discussion',
+             ('Approach', 'Agile SDLC \u2014 iterative development with continuous testing.'),
+             ('Architecture', 'Three-tier: Presentation, Application (Django), Database.'),
+             ('Stack', 'Django, Python, HTML/CSS/JS; SQLite (dev) / PostgreSQL (prod).'),
+             ('Progression', 'Each lesson unlocks after passing the prior quiz at \u226560%.'),
+             ('Playground', 'User code runs in an isolated subprocess with a time limit.'),
+             ('Flowchart', 'See Slide 10 for the complete system flowchart.')]},
+        # --- Slide 8: Implementation (screenshots) ---
+        {'kicker': 'Slide 8', 'title': 'Implementation: System Interfaces (Screenshots)',
          'kind': 'screenshot',
          'items': [
-             ('Quiz Interface',
-              'MCQ with instant scoring and pass-mark feedback.',
-              r'c:\Users\ALEXIS\Desktop\SENPAI\shots\mayor4code\08-quizzes.png'),
-             ('Learner Dashboard',
-              'Progress bar and lesson unlock status.',
-              r'c:\Users\ALEXIS\Desktop\SENPAI\shots\mayor4code\05-dashboard.png'),
+              ('Figure 1: Lesson Interface',
+               'Structured Python lesson with previous/next navigation and progress indicator.',
+               r'c:\Users\ALEXIS\Desktop\SENPAI\shots\mayor4code\06-lessons.png'),
+              ('Figure 2: Code Playground',
+               'In-browser Python editor that executes code safely and displays output.',
+               r'c:\Users\ALEXIS\Desktop\SENPAI\shots\mayor4code\07-playground.png'),
          ]},
-        # --- Slide 10: Contributions to Knowledge ---
-        {'kicker': 'Slide 10', 'title': 'Contributions to Knowledge',
+        # --- Slide 9: Results & Discussion (screenshots) ---
+        {'kicker': 'Slide 9', 'title': 'Results and Discussion: Testing Results and Performance Evaluation',
+         'kind': 'screenshot',
          'items': [
-             'Integrated platform: lessons, playground, assessment, gamification.',
-             'Mastery-based locked progression model.',
-             'Secure in-browser code execution via isolated subprocess.',
-             'Automated certification with unique verification codes.',
+              ('Figure 3: Quiz Interface',
+               'Multiple-choice quiz with instant scoring and pass-mark feedback.',
+               r'c:\Users\ALEXIS\Desktop\SENPAI\shots\mayor4code\08-quizzes.png'),
+              ('Figure 4: Learner Dashboard',
+               'Dashboard showing overall progress bar and lesson unlock status.',
+               r'c:\Users\ALEXIS\Desktop\SENPAI\shots\mayor4code\05-dashboard.png'),
          ]},
-        # --- Slide 11: Conclusion & References ---
-        {'kicker': 'Slide 11', 'title': 'Conclusion & References',
+        # --- Slide 10: System Flowchart ---
+        {'kicker': 'Slide 10', 'title': 'System Flowchart: User Journey Through the Platform',
+         'kind': 'screenshot',
+         'items': [
+              ('System Flowchart',
+               'Complete user journey from registration to certificate issuance.',
+               r'c:\Users\ALEXIS\Desktop\SENPAI\shots\mayor4code\flowchart.png'),
+         ]},
+        # --- Slide 11: Conclusion + Contributions ---
+        {'kicker': 'Slide 11', 'title': 'Contributions to Knowledge and Conclusion',
          'kind': 'two',
-         'left_title': 'Conclusion',
-         'left': ['All 6 objectives achieved: structured lessons, secure auth, '
-                  'playground, auto-scoring, certification, leaderboard.',
-                  'Testing confirmed all features work correctly.',
-                  'Integrated platform effective for Python beginners.'],
-         'right_title': 'References',
-         'right': ['Anderson, T. (2008). The theory and practice of online learning.',
-                   'Bloom, B. S. (1968). Mastery learning. Evaluation Comment, 1(2).',
-                   'Garrison, D. R. (2017). E-learning in the 21st century (3rd ed.). Routledge.',
-                   'Pressman, R. S., & Maxim, B. R. (2020). Software engineering (9th ed.). McGraw-Hill.',
-                   'Vygotsky, L. S. (1978). Mind in society. Harvard University Press.']},
+         'left_title': 'Contributions',
+         'left': ['Integrated platform combining structured lessons, playground, '
+                  'assessment, certification, and gamification in one free system.',
+                  'Mastery-based locked progression enforcing prerequisite understanding.',
+                  'Secure in-browser code execution via isolated subprocesses.',
+                  'Automated certification with unique verification codes.',
+                  'Reference implementation of Django for educational web apps.'],
+         'right_title': 'Conclusion / Recommendations',
+         'right': ['All objectives were achieved: structured lessons with locked progression, '
+                   'secure authentication, interactive playground, automated quiz scoring, '
+                   'progress tracking, certification, and a leaderboard were implemented '
+                   'and verified through testing.',
+                   'Recommendations include adopting the platform for introductory programming, '
+                   'extending with more courses, and adding adaptive learning features.']},
     ],
 }
 
-# ==================== AGRIFLOW DECK (cream + green + black) ====================
-AGRI_WARM = {
-    'dark': (0xF8, 0xF3, 0xEE),
-    'panel': (0xF0, 0xEB, 0xE6),
-    'accent': (0x05, 0x96, 0x69),
-    'accent2': (0x04, 0x7A, 0x55),
-    'text': (0x00, 0x00, 0x00),
-    'muted': (0x33, 0x33, 0x33),
-    'border': (0x05, 0x96, 0x69),
-}
+# ==================== AGRIFLOW DECK ====================
 agri = {
-    **AGRI_WARM,
+    **BW,
     'badge': 'BSc Project Defence',
     'title': 'AI-Driven Agricultural Supply Chain & Produce '
              'Scheduling System',
@@ -461,145 +443,6 @@ agri = {
              'natural-language explanations, making complex data accessible to all users.',
          ]},
         # --- Slide 11: Conclusion + References ---
-        {'kicker': 'Slide 11', 'title': 'Conclusion / References',
-         'kind': 'two',
-         'left_title': 'Conclusion',
-         'left': ['All objectives were achieved: a role-based platform for five user types, '
-                  'a marketplace with order management, a perishable-first scheduling '
-                  'engine, demand forecasting, spoilage tracking, and an explanatory '
-                  'AI assistant were implemented and tested.',
-                  'The platform demonstrates that combining a unified digital system with '
-                  'deterministic optimisation and grounded AI improves supply chain efficiency.'],
-         'right_title': 'References',
-         'right': ['Christopher, M. (2016). Logistics and supply chain management (5th ed.). '
-                   'Pearson.',
-                   'Elmasri, R. & Navathe, S. B. (2017). Fundamentals of database systems '
-                   '(7th ed.). Pearson.',
-                   'Google. (2024). Gemini API documentation. ai.google.dev',
-                   'Pressman, R. S. & Maxim, B. R. (2020). Software engineering (9th ed.). '
-                   'McGraw-Hill.',
-                   'Russell, S. J. & Norvig, P. (2021). Artificial intelligence: A modern '
-                   'approach (4th ed.). Pearson.',
-                   'Sommerville, I. (2016). Software engineering (10th ed.). Pearson.',
-                   'Supabase. (2024). Supabase documentation. supabase.com/docs']},
-    ],
-}
-
-# ==================== AGRIFLOW DECK (plain — no screenshots) ====================
-agri_plain = {
-    **AGRI_WARM,
-    'badge': 'BSc Project Defence',
-    'title': 'AI-Driven Agricultural Supply Chain & Produce '
-             'Scheduling System',
-    'student': 'Obayomi Samuel Oluwagbotemi',
-    'matric': 'CSC/22/124',
-    'supervisor': "'Dr. Adeolu Obamehinti'",
-    'slides': [
-        {'kicker': 'Slide 2', 'title': 'Introduction',
-         'items': [
-             'Agricultural supply chains for fresh produce suffer significant post-harvest '
-             'losses due to poor coordination, inefficient logistics, and lack of visibility.',
-             'Farmers, buyers, transporters, and warehouse managers often operate in '
-             'isolation, relying on manual and informal processes.',
-             'Web-based platforms and data-driven techniques can improve coordination '
-             'and reduce waste (Pressman & Maxim, 2020).',
-             'AgriFlow AI is an intelligent web platform that unifies supply chain '
-             'participants and applies deterministic decision rules to improve efficiency.',
-             'The system integrates a marketplace, perishable-first scheduling, demand '
-             'forecasting, spoilage tracking, and an AI assistant grounded in live data.',
-         ]},
-        {'kicker': 'Slide 3', 'title': 'Motivation / Statement of the Problem',
-         'items': [
-             'A substantial proportion of fresh produce is lost between harvest and '
-             'consumption due to poor logistics and weak coordination.',
-             'Deliveries are frequently scheduled without regard to perishability; '
-             'the most time-critical produce is not prioritised.',
-             'Demand is rarely anticipated systematically, causing both shortages '
-             'and surpluses that increase waste.',
-             'Operational data is often complex and difficult for non-experts to interpret, '
-             'limiting its usefulness for decision-making.',
-             'These challenges motivated the development of AgriFlow AI as an integrated, '
-             'intelligent, and practical platform for produce supply chain management.',
-         ]},
-        {'kicker': 'Slide 4', 'title': 'Aim and Objectives of the Study',
-         'kind': 'two',
-         'left_title': 'Aim',
-         'left': ['To design and implement an intelligent web-based agricultural supply '
-                  'chain platform that unifies participants and applies data-driven decision '
-                  'rules to improve efficiency and reduce post-harvest losses.'],
-         'right_title': 'Objectives',
-         'right': ['Design a role-based platform for 5 user types',
-                   'Implement a produce marketplace with order management',
-                   'Develop a deterministic perishable-first scheduling engine',
-                   'Implement demand forecasting and shelf-life spoilage tracking',
-                   'Integrate an AI assistant grounded in live operational data',
-                   'Evaluate functionality and reliability through testing']},
-        {'kicker': 'Slide 5', 'title': 'Significance of the Study',
-         'items': [
-             'Economic Impact: Reduces post-harvest losses through perishable-first '
-             'scheduling and spoilage tracking, improving incomes and lowering costs.',
-             'Social Impact: Strengthens coordination among supply chain participants '
-             'and contributes to food security by reducing food waste.',
-             'Technological Impact: Demonstrates integration of web technologies, '
-             'deterministic optimisation, and grounded AI for agricultural challenges.',
-             'Practical Impact: Provides a working model for combining reliable rule-based '
-             'logic with accessible natural-language explanations for non-expert users.',
-         ]},
-        {'kicker': 'Slide 6', 'title': 'Literature Review',
-         'items': [
-             'Post-harvest loss is a central concern in agricultural supply chains; effective '
-             'management minimises losses through improved coordination (Christopher, 2016).',
-             'Electronic marketplaces improve access but do not solve logistical challenges; '
-             'integrated platforms deliver greater value (Sommerville, 2016).',
-             'Deterministic rules such as perishable-first scheduling, moving averages, '
-             'and haversine distance give reliable, explainable decisions.',
-             'AI must be grounded in verified data to avoid fabrication; it should '
-             'explain rather than decide (Russell & Norvig, 2021).',
-             'Gap: Few systems integrate marketplace, perishability-aware logistics, '
-             'forecasting, and grounded AI assistance in one platform.',
-         ]},
-        {'kicker': 'Slide 7', 'title': 'Methodology',
-         'kind': 'cards',
-         'cards': [
-             ('Approach', 'Agile SDLC with automated end-to-end testing across all roles.'),
-             ('Architecture', 'Serverless: Next.js server components + cloud database.'),
-             ('Stack', 'Next.js 14, TypeScript, Tailwind; Supabase PostgreSQL + RLS.'),
-             ('Scheduling', 'Perishable-first; nearest warehouse; least-busy transporter.'),
-             ('Forecasting', 'Simple & weighted moving averages over 8 weeks.'),
-             ('AI Assistant', 'Google Gemini \u2014 explains live data only; all '
-                              'decisions are deterministic.')]},
-        {'kicker': 'Slide 8', 'title': 'Implementation',
-         'kind': 'bullets',
-         'items': [
-             'Role-based platform built with Next.js 14, TypeScript, and Tailwind CSS.',
-             'Supabase PostgreSQL with row-level security for data access control.',
-             'Deterministic algorithms: perishable-first scheduling, moving-average forecasting.',
-             'Google Gemini AI assistant grounded in live operational data.',
-             'Automated end-to-end testing across all five roles with Playwright.',
-             'Deployed as a progressive web application on Vercel.']},
-        {'kicker': 'Slide 9', 'title': 'Results & Discussion',
-         'kind': 'bullets',
-         'items': [
-             'All functional and non-functional requirements were met.',
-             '21 test cases across unit, functional, and E2E levels all passed.',
-             'Perishable-first scheduling correctly prioritises shortest shelf life first.',
-             'Demand forecasting computes accurate moving averages with trend indicators.',
-             'Shelf-life spoilage tracking correctly classifies items as fresh/expiring/spoiled.',
-             'AI assistant provides accurate plain-language explanations of operational data.',
-         ]},
-        {'kicker': 'Slide 10', 'title': 'Contributions to Knowledge',
-         'items': [
-             'A unified, role-based platform integrating marketplace, logistics, inventory, '
-             'and analytics for agricultural supply chain management.',
-             'A deterministic perishable-first scheduling engine that prioritises deliveries '
-             'by remaining shelf life and optimises warehouse and transporter assignments.',
-             'Demand forecasting using simple and weighted moving averages, with trend '
-             'indicators for accessible planning support.',
-             'Continuous shelf-life spoilage tracking that classifies stored items as '
-             'fresh, expiring, or spoiled for proactive decision-making.',
-             'An AI assistant grounded in live operational data that provides '
-             'natural-language explanations, making complex data accessible to all users.',
-         ]},
         {'kicker': 'Slide 11', 'title': 'Conclusion / References',
          'kind': 'two',
          'left_title': 'Conclusion',
@@ -764,5 +607,4 @@ ids = {
 
 build_deck(mayor, r'c:\Users\ALEXIS\Desktop\SENPAI\mayor4code_Defence_Slides.pptx')
 build_deck(agri, r'c:\Users\ALEXIS\Desktop\SENPAI\AgriFlow_AI_Defence_Slides.pptx')
-build_deck(agri_plain, r'c:\Users\ALEXIS\Desktop\SENPAI\AgriFlow_AI_Defence_Slides_Plain.pptx')
 build_deck(ids, r'c:\Users\ALEXIS\Desktop\SENPAI\ids_Defence_Slides.pptx')
