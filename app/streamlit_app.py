@@ -9,8 +9,10 @@ import os
 import time
 import re
 import random
+import ctypes
 from collections import defaultdict
-import google.generativeai as genai
+from google import genai
+from google.genai import types
 
 st.set_page_config(page_title="AI Intrusion Detection System", page_icon="🛡️", layout="wide")
 
@@ -158,6 +160,9 @@ st.markdown(f"""
 if "api_key" not in st.session_state:
     st.session_state.api_key = ""
 
+if "ai_model" not in st.session_state:
+    st.session_state.ai_model = ""
+
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
@@ -169,6 +174,19 @@ def load_artifacts():
     return model, scaler, feature_cols
 
 model, scaler, feature_cols = load_artifacts()
+
+def detect_available_model(api_key):
+    try:
+        client = genai.Client(api_key=api_key)
+        for m in client.models.list():
+            name = m.name
+            if 'gemini' not in name.lower():
+                continue
+            if 'flash' in name:
+                return name
+        return None
+    except Exception:
+        return None
 
 def get_tshark_path():
     common_paths = ["C:\\Program Files\\Wireshark\\tshark.exe", "C:\\Program Files (x86)\\Wireshark\\tshark.exe"]
@@ -183,6 +201,12 @@ def get_tshark_path():
     return None
 
 TSHARK_PATH = get_tshark_path()
+
+def is_admin():
+    try:
+        return ctypes.windll.shell32.IsUserAnAdmin() != 0
+    except:
+        return False
 
 def get_interfaces():
     if not TSHARK_PATH:
@@ -315,11 +339,14 @@ def predict(df):
     return preds, probs
 
 def ask_ai_assistant(user_message):
-    if not st.session_state.get('api_key'):
+    api_key = st.session_state.get('api_key')
+    ai_model = st.session_state.get('ai_model')
+    if not api_key:
         return "Enter your Gemini API key in the AI Assistant section above."
+    if not ai_model:
+        return "No Gemini model available. Check your API key."
     try:
-        genai.configure(api_key=st.session_state.api_key)
-        model_ai = genai.GenerativeModel("gemini-1.5-flash")
+        client = genai.Client(api_key=api_key)
         system_prompt = (
             "You are an AI cybersecurity assistant integrated into an Intrusion Detection System (IDS) dashboard. "
             "You can explain: how the IDS works (XGBoost model trained on CICIDS2017, 99.9% accuracy), "
@@ -329,7 +356,10 @@ def ask_ai_assistant(user_message):
             "Keep responses concise (2-4 sentences) and technically accurate. "
             "If asked something outside cybersecurity, politely redirect to security topics."
         )
-        chat = model_ai.start_chat(history=[{"role": "user", "parts": [system_prompt]}, {"role": "model", "parts": ["Understood. I am the IDS cybersecurity assistant."]}])
+        chat = client.chats.create(
+            model=ai_model,
+            config=types.GenerateContentConfig(system_instruction=system_prompt),
+        )
         response = chat.send_message(user_message)
         return response.text
     except Exception as e:
@@ -386,9 +416,17 @@ st.caption("Ask anything about the IDS system, network security, or attack types
 with st.expander("⚙️ Configure Gemini API Key", expanded=not st.session_state.api_key):
     st.caption("Get a free key at aistudio.google.com")
     api_key_input = st.text_input("API Key", type="password", value=st.session_state.api_key, label_visibility="collapsed")
-    if api_key_input:
+    if api_key_input and api_key_input != st.session_state.api_key:
         st.session_state.api_key = api_key_input
-        genai.configure(api_key=api_key_input)
+        st.session_state.ai_model = ""
+        st.session_state.messages = []
+        with st.spinner("Detecting available models..."):
+            detected = detect_available_model(api_key_input)
+            if detected:
+                st.session_state.ai_model = detected
+                st.success(f"Using {detected.split('/')[-1]}")
+            else:
+                st.error("No Gemini model available on this key. Check your API key at aistudio.google.com")
 
 for msg in st.session_state.messages:
     with st.chat_message(msg["role"]):
@@ -414,11 +452,16 @@ if send and user_query:
 
 tab1, tab2, tab3 = st.tabs(["CSV Upload", "PCAP Upload", "Live Capture"])
 
+def normalize_columns(cols):
+    return [c.strip().replace(' ', '') for c in cols]
+
 with tab1:
     uploaded = st.file_uploader("Upload CSV", type=["csv"])
     if uploaded:
         df = pd.read_csv(uploaded)
-        if set(feature_cols).issubset(df.columns):
+        df.columns = df.columns.str.strip()
+        missing = [c for c in feature_cols if c not in df.columns]
+        if not missing:
             preds, probs = predict(df[feature_cols])
             df["Prediction"] = ["BENIGN" if p == 0 else "ATTACK" for p in preds]
             df["Confidence"] = probs
@@ -451,7 +494,16 @@ with tab1:
                 st.success("No attacks found.")
             st.download_button("Download CSV", df.to_csv(index=False), "results.csv")
         else:
-            st.error("Columns mismatch")
+            extra = [c for c in df.columns if c not in feature_cols]
+            msg = f"Missing {len(missing)} column(s): {', '.join(missing[:5])}"
+            if len(missing) > 5:
+                msg += f" and {len(missing) - 5} more"
+            if extra:
+                msg += f"\n\nExtra column(s) in your CSV: {', '.join(extra[:3])}"
+                if len(extra) > 3:
+                    msg += f" and {len(extra) - 3} more"
+            msg += "\n\nExpected format: CICFlowMeter CSV with 71 flow features."
+            st.error(msg)
 
 with tab2:
     pcap = st.file_uploader("Upload PCAP", type=["pcap", "pcapng"])
@@ -500,9 +552,11 @@ with tab3:
         st.error("tshark not found. Install Wireshark.")
     else:
         st.success("tshark detected")
+        if not is_admin():
+            st.warning("⚠️ Run as Administrator to enable live capture. Right-click your terminal/script → Run as Administrator.")
         interfaces = get_interfaces()
         if not interfaces:
-            st.warning("No interfaces found. Run as Administrator.")
+            st.warning("No network interfaces detected. Make sure Wireshark/tshark is installed and run as Administrator.")
         else:
             friendly_names = [f[0] for f in interfaces]
             raw_devices = [f[1] for f in interfaces]
