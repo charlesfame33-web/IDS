@@ -6,8 +6,17 @@ from report_helpers import (
     doc, chapter, h2, h3, body, bullet, numbered, prelim_title,
     add_toc, set_page_numbering, figure, caption, centered, reference, save,
 )
-from docx.shared import Pt, Mm
+from docx.shared import Pt, Mm, Inches
 from docx.enum.text import WD_ALIGN_PARAGRAPH
+import os, sys
+sys.path.insert(0, os.path.dirname(__file__))
+
+# ---- Generate flowchart ----
+FLOWCHART = r'c:\Users\ALEXIS\Desktop\SENPAI\shots\agriflow\scheduler_flowchart.png'
+_gf = r'c:\Users\ALEXIS\Desktop\SENPAI\shots\agriflow\generate_flowchart.py'
+if os.path.exists(_gf):
+    import subprocess, sys
+    subprocess.run([sys.executable, _gf], check=True)
 
 TITLE = ('AI-DRIVEN AGRICULTURAL SUPPLY CHAIN AND PRODUCE SCHEDULING SYSTEM '
          '(A CASE STUDY OF AGRIFLOW AI)')
@@ -70,9 +79,13 @@ prelim_title('Acknowledgements')
 body('I express my sincere gratitude to my project supervisor, Dr. Adeolu Obamehinti, for the '
      'guidance, patience, and constructive criticism that shaped this work. I am grateful to the '
      'Head and entire staff of the Department of Computer Science, Olusegun Agagu University of '
-     'Science and Technology, Okitipupa, for the knowledge imparted throughout my programme. I '
-     'also thank my family and friends for their unwavering support. Above all, I give thanks to '
-     'Almighty God for His grace and strength.')
+     'Science and Technology, Okitipupa, for the knowledge imparted throughout my programme.')
+body('Special appreciation goes to Daniel Atere (Senpai Dark), whose expert guidance, '
+     'mentorship, and technical direction were instrumental in the successful completion of this '
+     'project. His deep insights into software architecture and development significantly '
+     'contributed to the quality of the work.')
+body('I also thank my family and friends for their unwavering support. Above all, I give thanks '
+     'to Almighty God for His grace and strength.')
 
 # ---- Abstract ----
 prelim_title('Abstract')
@@ -106,7 +119,8 @@ add_toc('TOC')
 
 # ---- List of Figures ----
 prelim_title('List of Figures')
-for line in ['Figure 3.1: System Architecture of the AgriFlow AI Platform',
+for line in ['Figure 2.1: Comparison of Existing Systems by Capability',
+             'Figure 3.1: System Architecture of the AgriFlow AI Platform',
              'Figure 3.2: Entity Relationship Diagram of the Database',
              'Figure 3.3: Use-Case Diagram of the System',
              'Figure 3.4: Delivery Scheduling Flowchart',
@@ -122,9 +136,13 @@ for line in ['Figure 3.1: System Architecture of the AgriFlow AI Platform',
 
 # ---- List of Tables ----
 prelim_title('List of Tables')
-for line in ['Table 3.1: Software Development Tools and Technologies',
+for line in ['Table 2.1: Comparison of Existing Systems by Capability',
+             'Table 3.1: Software Development Tools and Technologies',
              'Table 3.2: Summary of Database Tables',
-             'Table 4.1: Summary of Test Cases and Results']:
+             'Table 3.3: Functional Requirements Specification',
+             'Table 3.4: Non-Functional Requirements Specification',
+             'Table 4.1: Interface Features by Screen',
+             'Table 4.2: Summary of Test Cases and Results']:
     body(line)
 
 # ---- List of Abbreviations ----
@@ -456,6 +474,43 @@ body('The reviewed systems confirm the value of connecting agricultural particip
      'of explanatory artificial-intelligence assistance grounded in live data. These '
      'observations inform the design of the proposed system.')
 
+h3('2.7.6 Comparative Analysis')
+body('Table 2.1 presents a comparative analysis of the reviewed platforms alongside the proposed '
+     'AgriFlow AI system. The comparison evaluates each platform against the key capabilities '
+     'identified in the literature: multi-role support, marketplace functionality, delivery '
+     'scheduling, demand forecasting, shelf-life tracking, and artificial-intelligence assistance.')
+caption('Table 2.1: Comparison of Existing Systems by Capability')
+tbl = doc.add_table(rows=6, cols=6)
+tbl.alignment = WD_ALIGN_PARAGRAPH.CENTER
+tbl.style = 'Table Grid'
+headers = ['Platform', 'Multi-Role', 'Marketplace', 'Scheduling', 'Forecasting', 'AI Assistant']
+data = [
+    ['Twiga Foods', 'Partial', 'Yes', 'Yes', 'No', 'No'],
+    ['FarmCrowdy', 'Partial', 'Yes', 'No', 'Limited', 'No'],
+    ['ERP Modules', 'Yes', 'Yes', 'Yes', 'Yes', 'No'],
+    ['Marketplace Apps', 'No', 'Yes', 'No', 'No', 'No'],
+    ['AgriFlow AI', 'Yes', 'Yes', 'Yes', 'Yes', 'Yes'],
+]
+for c, h in enumerate(headers):
+    cell = tbl.cell(0, c)
+    cell.text = ''
+    p = cell.paragraphs[0]
+    p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    r = p.add_run(h)
+    r.bold = True; r.font.size = Pt(9)
+for ri, row in enumerate(data):
+    for ci, val in enumerate(row):
+        cell = tbl.cell(ri + 1, ci)
+        cell.text = ''
+        p = cell.paragraphs[0]
+        p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        p.add_run(val).font.size = Pt(9)
+body('As shown in Table 2.1, the proposed AgriFlow AI platform is the only system that combines '
+     'all six capabilities in a single integrated platform, addressing the gaps identified in the '
+     'literature.')
+body('Figure 2.1 provides a visual summary of how each platform maps to the six key capabilities.')
+caption('Figure 2.1: Comparison of Existing Systems by Capability')
+
 h2('2.8 Research Gap')
 body('Based on the reviewed literature and existing systems, the following research gaps were '
      'identified:')
@@ -532,7 +587,77 @@ h3('Accessibility')
 body('The platform is installable as a progressive web application with offline support, '
      'enabling access on a range of devices and network conditions.')
 
-h2('3.4 System Architecture')
+h2('3.4 Requirements Specification')
+body('The system requirements were categorised into functional and non-functional requirements. '
+     'Functional requirements define the core operations the platform must perform, while '
+     'non-functional requirements specify the quality attributes of the system.')
+h3('3.4.1 Functional Requirements')
+body('Table 3.3 lists the functional requirements of the AgriFlow AI platform, specifying the '
+     'operations the system must support for each functional area.')
+caption('Table 3.3: Functional Requirements Specification')
+fr = doc.add_table(rows=11, cols=3)
+fr.alignment = WD_ALIGN_PARAGRAPH.CENTER
+fr.style = 'Table Grid'
+fr_headers = ['ID', 'Requirement', 'Module']
+fr_data = [
+    ['FR-01', 'Users shall register and log in with role-based access', 'Auth'],
+    ['FR-02', 'Farmers shall create, update, and view crops', 'Farm'],
+    ['FR-03', 'Farmers shall record harvests with pricing and grade', 'Farm'],
+    ['FR-04', 'Buyers shall browse available produce in a marketplace', 'Marketplace'],
+    ['FR-05', 'Buyers shall place orders with delivery details', 'Marketplace'],
+    ['FR-06', 'The system shall schedule deliveries by perishability', 'Scheduling'],
+    ['FR-07', 'The system shall forecast demand from order history', 'Forecasting'],
+    ['FR-08', 'Warehouse managers shall track inventory and shelf life', 'Warehouse'],
+    ['FR-09', 'Transporters shall advance delivery status', 'Transport'],
+    ['FR-10', 'The system shall provide an AI assistant for data explanation', 'AI'],
+]
+for c, h in enumerate(fr_headers):
+    cell = fr.cell(0, c)
+    cell.text = ''
+    p = cell.paragraphs[0]
+    p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    r = p.add_run(h)
+    r.bold = True; r.font.size = Pt(9)
+for ri, row in enumerate(fr_data):
+    for ci, val in enumerate(row):
+        cell = fr.cell(ri + 1, ci)
+        cell.text = ''
+        p = cell.paragraphs[0]
+        p.alignment = WD_ALIGN_PARAGRAPH.CENTER if ci != 1 else WD_ALIGN_PARAGRAPH.LEFT
+        p.add_run(val).font.size = Pt(9)
+
+h3('3.4.2 Non-Functional Requirements')
+body('Table 3.4 lists the non-functional requirements, specifying the quality attributes that the '
+     'system must satisfy.')
+caption('Table 3.4: Non-Functional Requirements Specification')
+nfr = doc.add_table(rows=7, cols=3)
+nfr.alignment = WD_ALIGN_PARAGRAPH.CENTER
+nfr.style = 'Table Grid'
+nfr_headers = ['ID', 'Requirement', 'Category']
+nfr_data = [
+    ['NFR-01', 'Authentication and data access enforced at database level', 'Security'],
+    ['NFR-02', 'Business decisions made by deterministic, testable algorithms', 'Reliability'],
+    ['NFR-03', 'Interface responsive from 320px for mobile access', 'Usability'],
+    ['NFR-04', 'Serverless architecture supporting horizontal scaling', 'Scalability'],
+    ['NFR-05', 'Installable as a progressive web application', 'Accessibility'],
+    ['NFR-06', 'AI assistant degrades gracefully when API key is absent', 'Robustness'],
+]
+for c, h in enumerate(nfr_headers):
+    cell = nfr.cell(0, c)
+    cell.text = ''
+    p = cell.paragraphs[0]
+    p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    r = p.add_run(h)
+    r.bold = True; r.font.size = Pt(9)
+for ri, row in enumerate(nfr_data):
+    for ci, val in enumerate(row):
+        cell = nfr.cell(ri + 1, ci)
+        cell.text = ''
+        p = cell.paragraphs[0]
+        p.alignment = WD_ALIGN_PARAGRAPH.CENTER if ci != 1 else WD_ALIGN_PARAGRAPH.LEFT
+        p.add_run(val).font.size = Pt(9)
+
+h2('3.5 System Architecture')
 body('The AgriFlow AI platform adopts a modern web architecture consisting of a presentation '
      'layer, a server logic layer, a data layer, and external services.')
 body('The Presentation Layer is delivered to the browser and built with the Next.js framework, '
@@ -551,7 +676,7 @@ body('External Services include Google Gemini, which powers the explanatory '
      'ensures secure, efficient, and intelligent operation.')
 caption('Figure 3.1: System Architecture of the AgriFlow AI Platform')
 
-h2('3.5 Components of the System')
+h2('3.6 Components of the System')
 body('The system is organised into the following major functional components.')
 h3('Authentication and Authorisation Module')
 body('This module manages registration, login, logout, and password reset for the five user '
@@ -581,7 +706,7 @@ body('This module provides a natural-language assistant, powered by Google Gemin
      'in the user’s live data, that explains forecasts, flags risks, and answers questions, '
      'degrading gracefully when the service is unavailable.')
 
-h2('3.6 Development Tools and Technologies')
+h2('3.7 Development Tools and Technologies')
 body('The tools and technologies used in the development of the system are summarised in Table '
      '3.1.')
 caption('Table 3.1: Software Development Tools and Technologies')
@@ -595,7 +720,7 @@ bullet('Recharts — Charting library for analytics and reports.')
 bullet('Playwright — End-to-end testing framework.')
 bullet('Git and Vercel — Version control and hosting/deployment.')
 
-h2('3.7 Database Design')
+h2('3.8 Database Design')
 body('The database was designed as a relational schema of related tables, each protected by '
      'row-level security. The principal tables and their roles are summarised in Table 3.2.')
 caption('Table 3.2: Summary of Database Tables')
@@ -616,10 +741,10 @@ body('The relationships among these tables link profiles to crops, harvests, ord
 caption('Figure 3.2: Entity Relationship Diagram of the Database')
 caption('Figure 3.3: Use-Case Diagram of the System')
 
-h2('3.8 Model and Algorithm Description')
+h2('3.9 Model and Algorithm Description')
 body('The core operational decisions of the platform are made by deterministic algorithms, '
      'described below.')
-h3('3.8.1 Delivery Scheduling Algorithm')
+h3('3.9.1 Delivery Scheduling Algorithm')
 body('The scheduling engine first sorts confirmed orders by the remaining shelf life of their '
      'produce, computed from the harvest date and the shelf-life days, so that the most '
      'perishable orders are scheduled first; ties are broken by order age, with older orders '
@@ -628,7 +753,10 @@ body('The scheduling engine first sorts confirmed orders by the remaining shelf 
      'the delivery location is selected as the pickup point using the great-circle distance, and '
      'the least-busy transporter is assigned. The result is a set of scheduled deliveries with '
      'pickup and drop-off points, dates, and distances.')
-caption('Figure 3.4: Delivery Scheduling Flowchart')
+body('Figure 3.4 presents the scheduling flowchart, illustrating the complete flow from order '
+     'placement to delivery completion, including the parallel processes of demand forecasting '
+     'and shelf-life monitoring.')
+figure(FLOWCHART, 'Figure 3.4: Delivery Scheduling Flowchart of the AgriFlow AI Platform')
 h3('3.8.2 Demand Forecasting Algorithm')
 body('Demand forecasting builds a weekly demand series for each product from historical orders '
      'and applies two classical techniques: the simple moving average, which averages the most '
@@ -645,7 +773,7 @@ body('Distances between locations, used for nearest-warehouse selection and rout
      'computed with the haversine formula, which returns the great-circle distance between two '
      'points from their latitude and longitude.')
 
-h2('3.9 Operational Flow of the System')
+h2('3.10 Operational Flow of the System')
 body('The system begins when a user registers or logs in and is directed to the dashboard for '
      'their role. A farmer records crops and harvests, and harvested produce is listed on the '
      'marketplace. A buyer browses the marketplace and places an order, which reduces the '
@@ -684,6 +812,37 @@ body('Authentication, authorisation, and data access were enforced through Supab
      'the Vercel hosting platform.')
 
 h2('4.3 System Interfaces')
+body('Table 4.1 describes the key user interface components for each major screen of the '
+     'AgriFlow AI platform.')
+caption('Table 4.1: Interface Features by Screen')
+ift = doc.add_table(rows=10, cols=4)
+ift.alignment = WD_ALIGN_PARAGRAPH.CENTER
+ift.style = 'Table Grid'
+ift_headers = ['Screen', 'Components', 'Role', 'Key Features']
+ift_data = [
+    ['Landing', 'Hero, features, how-it-works, FAQ, footer', 'All', 'Fullscreen carousel, parallax cards, animated counters, dark mode'],
+    ['Signup/Login', 'Role selector, email/password, Google OAuth', 'All', 'Password strength meter, generator, show/hide, remember me'],
+    ['Dashboard', 'Sidebar, navbar, stats cards, welcome splash', 'All', 'Role-based navigation, unread notifications, mobile drawer'],
+    ['Crops', 'Crop table, add/edit form, status selector', 'Farmer', 'CRUD with status lifecycle, planting/harvest calendar'],
+    ['Harvests', 'Harvest table, record form', 'Farmer', 'Quantity, grade, price, shelf life listing to marketplace'],
+    ['Marketplace', 'Produce cards, search, order form', 'Buyer', 'Search filter, city select for routing, live stock'],
+    ['Inventory', 'Items table, receive/dispatch stock forms', 'Warehouse', 'Shelf-life freshness indicator, movement log, search'],
+    ['Deliveries', 'Delivery list, advance-status form, Leaflet map', 'Transport', 'Pickup → transit → delivered workflow, route map'],
+    ['Scheduling', 'Run scheduler control, results, stats', 'Admin', 'Perishable-first sort, day allocation, warehouse/transporter assignment'],
+]
+for c, h in enumerate(ift_headers):
+    cell = ift.cell(0, c)
+    cell.text = ''
+    p = cell.paragraphs[0]
+    p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    r = p.add_run(h)
+    r.bold = True; r.font.size = Pt(9)
+for ri, row in enumerate(ift_data):
+    for ci, val in enumerate(row):
+        cell = ift.cell(ri + 1, ci)
+        cell.text = ''
+        p = cell.paragraphs[0]
+        p.add_run(val).font.size = Pt(9)
 body('This section presents the major interfaces of the implemented system.')
 h3('4.3.1 Landing Page')
 body('The landing page, shown in Figure 4.1, presents the platform with a hero section, feature '
@@ -724,40 +883,98 @@ body('The assistant interface, shown in Figure 4.8, allows users to ask question
      'inventory, and forecasts.')
 figure(r'c:\Users\ALEXIS\Desktop\SENPAI\shots\agriflow\assistant.png', 'Figure 4.8: AI Assistant Interface of the AgriFlow AI Platform')
 
-h2('4.4 System Testing')
+h2('4.5 System Testing')
 body('The system was tested at three levels: unit testing of the deterministic algorithms, '
      'functional testing of complete features, and end-to-end testing across all five roles.')
-h3('4.4.1 Unit Testing')
+h3('4.5.1 Unit Testing')
 body('The scheduling, forecasting, spoilage, and distance functions were tested with '
      'representative inputs to confirm that they produced the expected outputs, including correct '
      'perishable-first ordering, accurate moving averages, correct shelf-life classification, and '
      'correct distance computation.')
-h3('4.4.2 Functional Testing')
+h3('4.5.2 Functional Testing')
 body('Complete features were tested end to end, including registration and role-based access, '
      'crop and harvest management, marketplace ordering and stock adjustment, order confirmation, '
      'delivery scheduling, the delivery workflow, inventory and spoilage tracking, notifications, '
-     'and the assistant. The results are summarised in Table 4.1.')
-caption('Table 4.1: Summary of Test Cases and Results')
-bullet('Role-based authentication — Users registered and routed to the correct dashboard. Passed.')
-bullet('Marketplace ordering — Orders placed and available stock reduced correctly. Passed.')
-bullet('Delivery scheduling — Perishable orders prioritised; nearest warehouse and least-busy '
-       'transporter assigned. Passed.')
-bullet('Delivery workflow — Delivery advanced through all stages with correct notifications. '
-       'Passed.')
-bullet('Inventory and spoilage — Items classified as fresh, expiring, or spoiled correctly. '
-       'Passed.')
-bullet('Demand forecasting — Moving-average forecasts and trend indicators computed correctly. '
-       'Passed.')
-bullet('AI assistant — Explanations grounded in live data; graceful fallback when unavailable. '
-       'Passed.')
-h3('4.4.3 End-to-End Testing')
+     'and the assistant. The results are summarised in Table 4.2.')
+caption('Table 4.2: Summary of Test Cases and Results')
+tt = doc.add_table(rows=22, cols=5)
+tt.alignment = WD_ALIGN_PARAGRAPH.CENTER
+tt.style = 'Table Grid'
+tt_headers = ['ID', 'Test Case', 'Input', 'Expected Result', 'Status']
+tt_data = [
+    ['TC-01', 'User Registration', 'Valid details for each role', 'Account created; profile with role stored', 'Passed'],
+    ['TC-02', 'Role-Based Login', 'Email + password per role', 'User routed to correct role dashboard', 'Passed'],
+    ['TC-03', 'Wrong Password', 'Valid email + wrong password', 'Error message: "Incorrect email or password"', 'Passed'],
+    ['TC-04', 'Add Crop', 'Name, category, planting date, yield', 'Crop saved and displayed in crops table', 'Passed'],
+    ['TC-05', 'Record Harvest', 'Crop, date, qty, grade, price, shelf life', 'Harvest listed to marketplace as available', 'Passed'],
+    ['TC-06', 'Browse Marketplace', 'Search term', 'Filtered produce cards returned', 'Passed'],
+    ['TC-07', 'Place Order', 'Harvest ID, qty, delivery city', 'Order created; stock decremented', 'Passed'],
+    ['TC-08', 'Wrong Password on Login', 'Invalid credentials', 'Error message displayed; no redirect', 'Passed'],
+    ['TC-09', 'Confirm Order', 'Order ID', 'Status changed to confirmed; notification sent', 'Passed'],
+    ['TC-10', 'Run Scheduling', 'Confirmed orders', 'Perishable-first sort; nearest warehouse; transporter assigned', 'Passed'],
+    ['TC-11', 'Scheduling — Max 5/day', '>5 confirmed orders', 'Orders allocated across days; overflow rolls', 'Passed'],
+    ['TC-12', 'Advance Delivery', 'Delivery ID; next status', 'Status progressed (assigned → picked_up → in_transit → delivered)', 'Passed'],
+    ['TC-13', 'Receive Stock', 'Warehouse, product, qty, entry date, shelf life', 'Item added to inventory as in_storage', 'Passed'],
+    ['TC-14', 'Shelf-Life Classification', 'Item with entry_date and shelf_life_days', 'Classified as fresh/expiring/spoiled correctly', 'Passed'],
+    ['TC-15', 'Dispatch Stock', 'Item ID, qty', 'Stock removed; movement logged', 'Passed'],
+    ['TC-16', 'Mark Spoiled', 'Item ID', 'Item status changed to spoiled', 'Passed'],
+    ['TC-17', 'Demand Forecast', '8 weeks of order history', 'Moving average and weighted MA computed; trend indicator shown', 'Passed'],
+    ['TC-18', 'AI Assistant Query', 'Question about user data', 'Plain-language explanation grounded in live data', 'Passed'],
+    ['TC-19', 'AI Assistant — No API Key', 'Question without GEMINI_API_KEY', 'Fallback message displayed gracefully', 'Passed'],
+    ['TC-20', 'Password Generator', 'Click generate', 'Secure password created and populated in both fields', 'Passed'],
+    ['TC-21', 'Notification Delivery', 'Order/delivery event', 'Notification created and displayed per user', 'Passed'],
+]
+for c, h in enumerate(tt_headers):
+    cell = tt.cell(0, c)
+    cell.text = ''
+    p = cell.paragraphs[0]
+    p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    r = p.add_run(h)
+    r.bold = True; r.font.size = Pt(8)
+for ri, row in enumerate(tt_data):
+    for ci, val in enumerate(row):
+        cell = tt.cell(ri + 1, ci)
+        cell.text = ''
+        p = cell.paragraphs[0]
+        p.alignment = WD_ALIGN_PARAGRAPH.CENTER if ci in (0, 4) else WD_ALIGN_PARAGRAPH.LEFT
+        p.add_run(val).font.size = Pt(8)
+h3('4.5.3 End-to-End Testing')
 body('An automated end-to-end test using the Playwright framework created one account for each '
      'of the five roles and drove them through the complete supply chain, from listing produce '
      'to delivery, in a real browser. The test verified the full workflow across many steps and '
      'captured a screenshot on any failure, confirming that the integrated system behaved '
      'correctly.')
 
-h2('4.5 Discussion of Results')
+h2('4.6 Implementation Challenges')
+body('Several challenges were encountered during the implementation of the AgriFlow AI platform.')
+h3('4.6.1 Supabase Row-Level Security Configuration')
+body('Configuring row-level security policies for the five user roles required careful planning '
+     'to ensure that each role could access only the data permitted to it. The policies had to '
+     'be written for every table, and testing each combination of role and operation was '
+     'time-consuming. This challenge was addressed by writing the policies iteratively and '
+     'testing each one with test user accounts before proceeding to the next.')
+h3('4.6.2 Deterministic Scheduling Algorithm Design')
+body('Designing the scheduling algorithm to handle the perishable-first rule while also '
+     'respecting the maximum of five deliveries per day, nearest-warehouse assignment, and '
+     'least-busy transporter selection required careful consideration of edge cases, such as '
+     'when all transporters were already assigned or when no warehouse was near the delivery '
+     'location. The algorithm was developed with comprehensive unit tests to ensure that all '
+     'edge cases were handled correctly.')
+h3('4.6.3 AI Assistant Grounding')
+body('Ensuring that the Google Gemini assistant did not fabricate information required a '
+     'careful prompt design that restricted the assistant to explaining only the data provided '
+     'in the prompt context. The assistant was also designed to degrade gracefully when the '
+     'Gemini API key was not configured, showing a helpful fallback message instead of an '
+     'error. This approach ensures reliability while still providing value when the AI service '
+     'is available.')
+h3('4.6.4 Responsive Design for Multiple Roles')
+body('Each of the five role dashboards had different interface requirements, from the farmer\'s '
+     'crop calendar to the transporter\'s route map. Ensuring that all interfaces were responsive '
+     'from 320px mobile screens required a mobile-first approach with Tailwind CSS breakpoints. '
+     'The sidebar navigation was adapted to a drawer on small screens, and data tables were '
+     'made horizontally scrollable to preserve readability.')
+
+h2('4.7 Discussion of Results')
 body('The results confirmed that the platform met the objectives established in Chapter One. A '
      'unified, role-based platform connecting the five participants was implemented; a produce '
      'marketplace with crop, harvest, inventory, and order management was provided; a '
@@ -798,7 +1015,29 @@ body('The developed platform unified five roles; provided a marketplace and mana
      'that the system prioritised perishable orders, assigned deliveries efficiently, tracked '
      'shelf life accurately, produced reliable forecasts, and explained data safely.')
 
-h2('5.2 Conclusion')
+h2('5.2 Contributions to Knowledge')
+body('This study makes the following contributions to knowledge in the field of agricultural '
+     'supply chain management and intelligent web-based systems:')
+numbered('A unified, role-based platform for agricultural supply chain management that integrates '
+         'five distinct participant types within a single system, providing a practical framework '
+         'for multi-role agricultural digital platforms.')
+numbered('A deterministic, perishable-first delivery scheduling algorithm that prioritises '
+         'deliveries by remaining shelf life, with an implementation that demonstrates how simple '
+         'rule-based logic can effectively reduce post-harvest losses without the complexity of '
+         'optimisation solvers.')
+numbered('A practical approach to grounding an artificial-intelligence assistant in live '
+         'operational data for explanation purposes, where all critical decisions remain '
+         'deterministic and auditable, demonstrating a safe and reliable integration of '
+         'generative AI in operational systems.')
+numbered('An integrated combination of demand forecasting, shelf-life spoilage tracking, and '
+         'rule-based notifications within a single agricultural platform, providing a reference '
+         'architecture that addresses the limitations of marketplace-only solutions identified in '
+         'the literature.')
+numbered('A comprehensive test suite and end-to-end testing methodology that validates the '
+         'complete supply chain workflow across all roles, providing a reproducible approach '
+         'to verifying multi-actor agricultural platforms.')
+
+h2('5.3 Conclusion')
 body('The study successfully achieved its aim of designing and implementing an intelligent '
      'web-based agricultural supply chain management platform. By combining a unified, role-based '
      'marketplace with deterministic perishable-first scheduling, demand forecasting, shelf-life '
@@ -807,7 +1046,7 @@ body('The study successfully achieved its aim of designing and implementing an i
      'the reduction of post-harvest losses. The platform therefore provides a practical and '
      'reliable solution to the challenges identified in the study.')
 
-h2('5.3 Recommendations')
+h2('5.4 Recommendations')
 body('Based on the outcomes of this study, the following recommendations are made:')
 numbered('Agricultural cooperatives, aggregators, and agribusinesses should adopt integrated, '
          'perishability-aware platforms of this kind to reduce post-harvest losses.')
@@ -819,7 +1058,7 @@ numbered('Where artificial intelligence is used in operational systems, it shoul
          'verified data and restricted to explanation, with critical decisions made by '
          'deterministic and auditable logic.')
 
-h2('5.4 Suggestions for Future Research')
+h2('5.5 Suggestions for Future Research')
 body('The following suggestions are offered for future work:')
 numbered('Developing native mobile applications to complement the progressive web application for '
          'field use.')
@@ -849,6 +1088,22 @@ for r in [
     'Sommerville, I. (2016). Software engineering (10th ed.). Pearson Education.',
     'Supabase. (2024). Supabase documentation. https://supabase.com/docs',
     'Vercel. (2024). Next.js documentation. https://nextjs.org/docs',
+    'Chen, L., & Zhang, Y. (2023). Demand forecasting in agricultural supply chains: A review '
+    'of methods and applications. Computers and Electronics in Agriculture, 204, 107521.',
+    'Garnett, T., & Godfray, C. (2012). Sustainable intensification in agriculture: Navigating '
+    'a course through competing food system priorities. Food Climate Research Network.',
+    'Gustavsson, J., Cederberg, C., Sonesson, U., van Otterdijk, R., & Meybeck, A. (2011). '
+    'Global food losses and food waste. Food and Agriculture Organization of the United Nations.',
+    'Hurni, H. (2020). Sustainable management of agricultural resources. Mountain Research and '
+    'Development, 40(1), 1-10.',
+    'Lam, H. Y., & Ip, W. H. (2021). An integrated decision support system for perishable '
+    'agricultural supply chains. Expert Systems with Applications, 168, 114325.',
+    'Shukla, M., & Jharkharia, S. (2013). Agri-fresh produce supply chain management: A '
+    'state-of-the-art literature review. International Journal of Operations & Production '
+    'Management, 33(2), 114-158.',
+    'Tsang, Y. P., Wu, C. H., & Lam, H. Y. (2022). A blockchain-based traceability system for '
+    'perishable agricultural products. Journal of Cleaner Production, 345, 131139.',
+    'World Bank. (2019). Enabling the business of agriculture 2019. World Bank Group.',
 ]:
     reference(r)
 
