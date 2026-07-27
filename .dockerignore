@@ -1,0 +1,17 @@
+data/
+models/
+reports/
+*.pcap
+*.csv
+*.pkl
+__pycache__/
+*.pyc
+.env
+.git/
+.gitignore
+.venv/
+venv/
+node_modules/
+Dockerfile
+docker-compose.yml
+*.md

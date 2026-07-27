@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+*.egg-info/
+dist/
+build/
+
+# Data
+data/raw/
+data/processed/
+capture_temp.pcap
+
+# Env
+.env
+venv/
+.venv/
+
+# Streamlit
+*.streamlit/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
